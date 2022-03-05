@@ -9,13 +9,13 @@ class UI:
 
     def show(self):
         if self.is_main_menu:
-            self.show_main_menu()
+            self._show_main_menu()
         elif self.is_pause_menu:
-            self.show_pause_menu()
+            self._show_pause_menu()
         else:
-            self.show_level()
+            self._show_level()
 
-    def show_level(self):
+    def _show_level(self):
         print('------------------------------')
         print('It is level %i' % (self.level))
         print('1 - NEXT LEVEL')
@@ -31,7 +31,7 @@ class UI:
             case _:
                 pass
 
-    def show_main_menu(self):
+    def _show_main_menu(self):
         print('SLEEP WALK v 0.1')
         print('1 - START')
         print('2 - EXIT')
@@ -43,7 +43,7 @@ class UI:
             case '2':
                 self.game.exit()
 
-    def show_pause_menu(self):
+    def _show_pause_menu(self):
         print('Pause')
         print('1 - RESUME')
         print('2 - EXIT')

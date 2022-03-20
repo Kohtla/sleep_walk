@@ -15,7 +15,12 @@ class DummyDatabase(Database):
         return self.persons.values()[0]
 
     def create_person(self, name):
-        person = Person(name,0,0,datetime.now())
+        person = Person()
+        person.name = name
+        person.cash = 0
+        person.date_created = datetime.now()
+        person.score = 0
+        self.persons[name] = person
         return person
 
     def update_person(self, person):

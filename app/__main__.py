@@ -1,15 +1,15 @@
+from app.db.dummy import DummyDatabase
 from .game import Game
 from .ui import UI
-from .database import Database
+from .db.sqlite import SQLDatabase
 
 
 def main():
     print('Start game')
     # create and migrate database
-    db = Database()
-    db.migrate()
+    db = DummyDatabase()
     # run main loop and
-    game = Game(UI())
+    game = Game(UI(), db)
     game.loop()
 
     print('Exit game')

@@ -9,6 +9,12 @@ class Person(BaseModel):
     level = ForeignKeyField(Level)
     cash = IntegerField()
     score = IntegerField()
-    is_main = BooleanField()
     date_created = DateTimeField()
     date_updated = DateTimeField(default=datetime.now())
+
+    def __init__(self, name, cash, score, date_created):
+        self.name = name
+        self.cash = cash
+        self.score = score
+        self.date_created = date_created
+

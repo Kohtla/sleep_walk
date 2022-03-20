@@ -3,6 +3,7 @@ class UI:
     level = 1
     is_pause_menu = False
     is_main_menu = True
+    is_create_person_menu = False
 
     def pass_game_object(self, game_object):
         self.game = game_object
@@ -57,3 +58,11 @@ class UI:
 
     def next_level(self):
         self.level += 1
+
+    def _create_person_menu(self):
+        print('Creating new person...')
+        name = input('Name:')
+        self.game.create_person(name)
+        print()
+
+

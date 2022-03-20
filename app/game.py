@@ -36,6 +36,10 @@ class Game:
 
     def unpause(self):
         self.is_pause_menu = False
+    
+    def open_main_menu(self):
+        self.is_pause_menu = False
+        self.is_main_menu = True
 
     # data manipulating commands
     def get_person(self, pk):

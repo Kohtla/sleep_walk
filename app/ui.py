@@ -50,11 +50,14 @@ class UI:
     def _pause_menu(self):
         print('Pause')
         print('1 - RESUME')
-        print('2 - EXIT')
+        print('2 - MAIN MENU')
+        print('3 - EXIT')
         choice = input()
         match choice:
             case '1':
                 self.game.unpause()
+            case '2':
+                self.game.open_main_menu()
             case '2':
                 self.game.exit()
 

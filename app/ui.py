@@ -1,6 +1,6 @@
 class UI:
     game = None
-    level = 1    
+    level = 1
 
     def pass_game_object(self, game_object):
         self.game = game_object
@@ -12,6 +12,8 @@ class UI:
             self._pause_menu()
         elif self.game.is_create_person_menu:
             self._create_person_menu()
+        elif self.game.is_load_person_menu:
+            self._load_person_menu()
         else:
             self._level()
 
@@ -24,8 +26,8 @@ class UI:
         choice = input()
         match choice:
             case '1':
-                self.next_level()                
-            case '2':                
+                self.next_level()
+            case '2':
                 self.game.pause()
             case _:
                 pass
@@ -41,9 +43,9 @@ class UI:
             case '1':
                 self.game.start_new_game()
             case '2':
-                print('not implemented')
+                self.game.start(self.game.get_latest_person())
             case '3':
-                print('not implemented')
+                self.game.open_load_menu()
             case '4':
                 self.game.exit()
 
@@ -58,7 +60,7 @@ class UI:
                 self.game.unpause()
             case '2':
                 self.game.open_main_menu()
-            case '2':
+            case '3':
                 self.game.exit()
 
     def next_level(self):
@@ -70,4 +72,13 @@ class UI:
         self.game.create_person(name)
         print()
 
-
+    def _load_person_menu(self):
+        print('Choose person to play...')
+        n = 1
+        persons = {}
+        for p in self.game.list_persons():
+            print('%i - %s - %i' % (n, p.name, p.cash))
+            persons[str(n)] = p
+            n += 1
+        choice = input('Load #:')
+        self.game.start(persons[choice])

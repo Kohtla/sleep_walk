@@ -6,7 +6,7 @@ from .base_model import BaseModel
 
 class Person(BaseModel):
     name = CharField()
-    level = ForeignKeyField(Level)
+    level = ForeignKeyField(Level, null = True)
     cash = IntegerField()
     score = IntegerField()
     date_created = DateTimeField()

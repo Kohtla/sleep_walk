@@ -1,11 +1,13 @@
 from datetime import datetime
-from peewee import CharField, ForeignKeyField, IntegerField, DateTimeField
+from enum import unique
+from peewee import AutoField, CharField, ForeignKeyField, IntegerField, DateTimeField
 from .level import Level
 from .base_model import BaseModel
 
 
 class Person(BaseModel):
-    name = CharField(primary_key=True)
+    id = AutoField()
+    name = CharField(unique=True)
     level = ForeignKeyField(Level, null=True)
     cash = IntegerField()
     score = IntegerField()

@@ -10,6 +10,8 @@ def init_story():
     Line.delete()
     Level.delete()
 
+    db.create_person('Anna Maria Del Piero')
+
     level1 = db.create_level(Level(name='Welcome',
                                   text='Welcome boi',
                                   language='rus'))                                  
@@ -42,6 +44,8 @@ def init_story():
                                   text='You are fat fuck',
                                   prev_level = level1,
                                   language='rus'))
+    level1.next_level = level2
+    level1.save()
 
     line4 = Line(character='Kohtla',
                  text='This is the first and the last line of that level',
@@ -54,6 +58,6 @@ def init_story():
                  level=level2,
                  language='rus',
                  prev_line=line4)    
-    db.create_line(line4)
+    db.create_line(line5)
     line4.next_line = line5
     line4.save()

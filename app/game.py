@@ -40,8 +40,7 @@ class Game:
         self.is_main_menu = False
     
     def start_level(self):
-        if not self.line:
-            self.line = self.db.get_first_line(self.level)
+        self.line = self.db.get_first_line(self.level)
     
     def next_line(self):
         if self.line.next_line:
@@ -53,6 +52,7 @@ class Game:
         if self.level.next_level:
             self.level = self.level.next_level
             self.person.level = self.level
+            self.start_level()
             self.update_person(self.person)
         else:
             self.end_game()
@@ -98,7 +98,8 @@ class Game:
         return self.db.list_persons()
 
     def create_person(self, name):
-        self.start(self.db.create_person(name))
+        person = self.db.create_person(name)
+        self.start(person)
         self.is_create_person_menu = False
     
     def update_person(self, person):

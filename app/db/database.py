@@ -1,4 +1,5 @@
 class Database:
+    # person
     def get_person(self, pk):
         pass
 
@@ -12,4 +13,18 @@ class Database:
         pass
 
     def update_person(self, person):
+        pass
+
+    # level
+    def create_level(self, level):
+        pass
+
+    def get_level(self, pk):
+        pass
+
+    # line
+    def create_line(self, pk):
+        pass
+
+    def get_line(self, pk):
         pass

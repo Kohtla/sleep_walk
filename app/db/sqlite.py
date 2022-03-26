@@ -13,7 +13,7 @@ class SQLDatabase(Database):
         self.db.connect()
         self.db.create_tables([Person, Level])
         self.db.close()
-
+    # person
     def get_person(self, pk):
         Person.get(Person.username == pk)
         return Person
@@ -32,3 +32,5 @@ class SQLDatabase(Database):
     def update_person(self, person):
         person.save()
         return person
+    
+    # level

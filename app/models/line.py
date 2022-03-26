@@ -9,4 +9,5 @@ class Line(BaseModel):
     character = CharField()
     text = TextField()
     language = CharField()
-    next_line = ForeignKeyField('self', backref='previous_line', null=True)
+    prev_line = ForeignKeyField('self', null=True)
+    next_line = ForeignKeyField('self', null=True)

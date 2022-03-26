@@ -1,6 +1,6 @@
+from app.init_story import init_story
 class UI:
     game = None
-    level = 1
 
     def pass_game_object(self, game_object):
         self.game = game_object
@@ -19,8 +19,9 @@ class UI:
 
     def _level(self):
         print('------------------------------')
-        print('It is level %i for %s' % (self.level, self.game.person.name))
-        print('1 - NEXT LEVEL')
+        print('It is level %s for %s' % (self.game.level.name, self.game.person.name))
+        print('%s: %s' % (self.game.line.character, self.game.line.text))
+        print('1 - NEXT LINE')
         print('2 - PAUSE')
         print('------------------------------')
         choice = input()
@@ -38,16 +39,19 @@ class UI:
         print('2 - CONTINUE')
         print('3 - LOAD GAME')
         print('4 - EXIT')
+        print('5 - init story')
         choice = input()
         match choice:
             case '1':
-                self.game.start_new_game()
+                self.game.open_create_person_menu()
             case '2':
                 self.game.start(self.game.get_latest_person())
             case '3':
                 self.game.open_load_menu()
             case '4':
                 self.game.exit()
+            case '5':
+                init_story()
 
     def _pause_menu(self):
         print('Pause')

@@ -22,9 +22,15 @@ class Database:
     def get_level(self, pk):
         pass
 
+    def get_first_level(self):
+        pass
+
     # line
-    def create_line(self, pk):
+    def create_line(self, line):
         pass
 
     def get_line(self, pk):
+        pass
+
+    def get_first_line(self, level):
         pass

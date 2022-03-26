@@ -4,7 +4,8 @@ from .base_model import BaseModel
 
 class Level(BaseModel):
     id = AutoField()
-    next_level = ForeignKeyField('self', backref='previous_level', null=True)
+    prev_level = ForeignKeyField('self', null=True)
+    next_level = ForeignKeyField('self', null=True)
     text = TextField()
     name = CharField()
     language = CharField()

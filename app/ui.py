@@ -14,6 +14,8 @@ class UI:
             self._create_person_menu()
         elif self.game.is_load_person_menu:
             self._load_person_menu()
+        elif self.game.is_titles:
+            self._show_titles()
         else:
             self._level()
 
@@ -27,7 +29,7 @@ class UI:
         choice = input()
         match choice:
             case '1':
-                self.next_level()
+                self.game.next_line()
             case '2':
                 self.game.pause()
             case _:
@@ -65,10 +67,7 @@ class UI:
             case '2':
                 self.game.open_main_menu()
             case '3':
-                self.game.exit()
-
-    def next_level(self):
-        self.level += 1
+                self.game.exit()        
 
     def _create_person_menu(self):
         print('Creating new person...')
@@ -86,3 +85,15 @@ class UI:
             n += 1
         choice = input('Load #:')
         self.game.start(persons[choice])
+    
+    def _show_titles(self):
+        print('This is the end, my friend')
+        print('')
+        print('Designed and developed by Kohtla')
+        print('')
+        print('1 - return to main menu')
+        choice = input()
+        match choice:
+            case '1':
+                self.game.close_titles()
+

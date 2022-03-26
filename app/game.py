@@ -13,6 +13,7 @@ class Game:
     is_main_menu = True
     is_create_person_menu = False
     is_load_person_menu = False
+    is_titles = False
 
     def __init__(self, ui, db):
         self.ui = ui
@@ -41,6 +42,23 @@ class Game:
     def start_level(self):
         if not self.line:
             self.line = self.db.get_first_line(self.level)
+    
+    def next_line(self):
+        if self.line.next_line:
+            self.line = self.line.next_line
+        else:
+            self.next_level()
+    
+    def next_level(self):
+        if self.level.next_level:
+            self.level = self.level.next_level
+            self.person.level = self.level
+            self.update_person(self.person)
+        else:
+            self.end_game()
+
+    def end_game(self):
+        self.open_titles()
 
     # ui state functions
     def pause(self):
@@ -61,6 +79,13 @@ class Game:
         self.is_create_person_menu = True
         self.is_main_menu = False
         self.is_pause_menu = False
+    
+    def open_titles(self):
+        self.is_titles = True
+    
+    def close_titles(self):
+        self.is_titles = False
+        self.is_main_menu = True
 
     # data manipulating commands
     def get_person(self, pk):
@@ -75,3 +100,6 @@ class Game:
     def create_person(self, name):
         self.start(self.db.create_person(name))
         self.is_create_person_menu = False
+    
+    def update_person(self, person):
+        self.person = self.db.update_person(person)

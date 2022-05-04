@@ -32,5 +32,14 @@ class Database:
     def get_line(self, pk):
         pass
 
+    def get_lines(self, pks):
+        pass
+
     def get_first_line(self, level):
+        pass
+
+    def add_choices(self, line, choices):
+        pass
+
+    def get_choices(self, line):
         pass

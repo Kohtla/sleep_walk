@@ -1,4 +1,6 @@
 from app.init_story import init_story
+
+
 class UI:
     game = None
 
@@ -21,19 +23,26 @@ class UI:
 
     def _level(self):
         print('------------------------------')
-        print('It is level %s for %s' % (self.game.level.name, self.game.person.name))
+        print('It is level %s for %s' %
+              (self.game.level.name, self.game.person.name))
         print('%s: %s' % (self.game.line.character, self.game.line.text))
-        print('1 - NEXT LINE')
-        print('2 - PAUSE')
+        i = 1
+        choices = {}
+        for choice in self.game.get_choices():
+            print('%i - %s' % (i, choice.text))
+            choices[str(i)] = choice
+            i += 1
+        if not choices:
+            print('next - NEXT LINE')
+        print('0 - PAUSE')
         print('------------------------------')
         choice = input()
-        match choice:
-            case '1':
-                self.game.next_line()
-            case '2':
-                self.game.pause()
-            case _:
-                pass
+        if choice == '0':
+            self.game.pause()
+        elif choice == 'next':
+            self.game.next_level()
+        else:
+            self.game.make_choice(choices[choice])
 
     def _main_menu(self):
         print('SLEEP WALK v 0.1')
@@ -67,7 +76,7 @@ class UI:
             case '2':
                 self.game.open_main_menu()
             case '3':
-                self.game.exit()        
+                self.game.exit()
 
     def _create_person_menu(self):
         print('Creating new person...')
@@ -85,7 +94,7 @@ class UI:
             n += 1
         choice = input('Load #:')
         self.game.start(persons[choice])
-    
+
     def _show_titles(self):
         print('This is the end, my friend')
         print('')
@@ -96,4 +105,3 @@ class UI:
         match choice:
             case '1':
                 self.game.close_titles()
-

@@ -1,5 +1,5 @@
 from .game import Game
-from .ui import UI
+from .controller import Controller
 from .db import SQLDatabase
 
 
@@ -8,7 +8,7 @@ def main():
     # create and migrate database
     db = SQLDatabase()
     # run main loop and
-    game = Game(UI(), db)
+    game = Game(Controller(), db)
     game.loop()
 
     print('Exit game')

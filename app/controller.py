@@ -1,12 +1,17 @@
 from app.ui import Console
+from app.ui import GUI
+
 
 class Controller:
     game = None
-    ui = Console()
+    ui = None
     def pass_game_object(self, game_object):
         self.game = game_object
+    
+    def __init__(self, ui):
+        self.ui = ui
 
-    def show(self):        
+    def show(self):      
         if self.game.is_main_menu:
             self._main_menu()
         elif self.game.is_pause_menu:

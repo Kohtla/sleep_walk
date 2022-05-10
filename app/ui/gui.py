@@ -85,12 +85,18 @@ class GUI(App):
         btn_go.bind(on_press=self._create_person)
         self.layout.add_widget(btn_go)
 
+    def _load_game(self, instance):
+        self.game.start(instance.person)
+        self.show_level()
+
     def load_person_menu(self, instance):
         self.layout.clear_widgets()
         self.layout.add_widget(Label(text='Load person menu'))
 
         for person in self.game.list_persons():
             btn  = Button(text=person.name)
+            btn.person = person
+            btn.bind(on_press=self._load_game)
             self.layout.add_widget(btn)
 
         btn_m = Button(text='RETURN')

@@ -21,7 +21,11 @@ class GUI(App):
     
     def callback(self, instance):
         print('The button <%s> is being pressed' % instance.text)
-   
+    
+    def _continue(self, instance):
+        self.game.start(self.game.get_latest_person())
+        self.show_level()
+
     def main_menu(self, instance):
         self.layout.clear_widgets()
         self.layout.add_widget(Label(text='SLEEP WALK v 0.2'))
@@ -31,7 +35,7 @@ class GUI(App):
         self.layout.add_widget(btn_ng)
 
         btn_c = Button(text='CONTINUE')
-        btn_c.bind(on_press=self.callback)
+        btn_c.bind(on_press=self._continue)
         self.layout.add_widget(btn_c)
 
         btn_lg = Button(text='LOAD GAME')
@@ -84,6 +88,10 @@ class GUI(App):
     def load_person_menu(self, instance):
         self.layout.clear_widgets()
         self.layout.add_widget(Label(text='Load person menu'))
+
+        for person in self.game.list_persons():
+            btn  = Button(text=person.name)
+            self.layout.add_widget(btn)
 
         btn_m = Button(text='RETURN')
         btn_m.bind(on_press=self.main_menu)

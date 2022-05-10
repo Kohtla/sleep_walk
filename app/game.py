@@ -9,11 +9,7 @@ class Game:
     level = None
     line = None
 
-    is_pause_menu = False
-    is_main_menu = True
-    is_create_person_menu = False
-    is_load_person_menu = False
-    is_titles = False
+    the_end = False
 
     def __init__(self, db):
         self.db = db
@@ -52,7 +48,7 @@ class Game:
             self.end_game()
 
     def end_game(self):
-        self.open_titles()
+        self.the_end = True
 
     # data manipulating commands
 

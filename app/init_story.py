@@ -1,7 +1,7 @@
 
 from distutils.command.build_scripts import first_line_re
 from app.db import SQLDatabase
-from app.models import Level, Line, Choice
+from app.models import Level, Line
 
 import os
 import json
@@ -12,7 +12,10 @@ def init_story():
     Line.delete()
     Level.delete()
 
-    db.create_person('Anna Maria Del Piero')
+    try:
+        db.create_person('Anna Maria Del Piero')
+    except Exception:
+            pass
     data = None
     with open('stories/rus.json', 'r', encoding='utf-8') as f:
         data = json.load(f)

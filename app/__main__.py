@@ -1,8 +1,7 @@
-from app.ui import GUI
+from .gui import GUI
 from .game import Game
-from .controller import Controller
 from .db import SQLDatabase
-
+from .settings import dev
 
 def main():
     print('Start game')
@@ -10,7 +9,7 @@ def main():
     db = SQLDatabase()
     # run main loop and
     game = Game(db)    
-    ui = GUI(game)
+    ui = GUI(game, dev)
     ui.run()
 
     print('Exit game')

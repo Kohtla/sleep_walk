@@ -1,17 +1,35 @@
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
+from kivy.uix.widget import Widget
+from kivy.uix.image import Image
+from kivy.lang.builder import Builder
+
+from kivy.core.window import Window
 from kivy.app import App
 import kivy
+
+from app.init_story import init_story
 kivy.require('2.1.0')  # replace with your current kivy version !
+
+class BackGround(Image):
+    pass
+
+
+class RootWidget(FloatLayout):
+    def __init__(self, **kwargs):
+        super(RootWidget, self).__init__(**kwargs)
 
 
 class GUI(App):
-    layout = BoxLayout()
+    layout = RootWidget()
     game = None
+    settings = None
 
-    def __init__(self, game, **kwargs):
+    def __init__(self, game, settings, **kwargs):
+        self.settings = settings
         self.game = game
         super().__init__(**kwargs)
         self.main_menu()
@@ -26,25 +44,40 @@ class GUI(App):
         self.game.start(self.game.get_latest_person())
         self.show_level()
 
+    def _init_story(self, instance):
+        init_story()
+
     def main_menu(self, instance=None):
         self.layout.clear_widgets()
-        self.layout.add_widget(Label(text='SLEEP WALK v 0.2'))
+
+        box = BoxLayout(orientation='vertical')
+        bg = BackGround(source='img/menu.png', size_hint=(None, None), size=(Window.width, Window.height))
+        
+        self.layout.add_widget(bg)
+
+        box.add_widget(Label(text='SLEEP WALK v 0.2'))
 
         btn_ng = Button(text='NEW GAME')
         btn_ng.bind(on_press=self.create_person_menu)
-        self.layout.add_widget(btn_ng)
+        box.add_widget(btn_ng)
 
         btn_c = Button(text='CONTINUE')
         btn_c.bind(on_press=self._continue)
-        self.layout.add_widget(btn_c)
+        box.add_widget(btn_c)
 
         btn_lg = Button(text='LOAD GAME')
         btn_lg.bind(on_press=self.load_person_menu)
-        self.layout.add_widget(btn_lg)
+        box.add_widget(btn_lg)
 
         btn_e = Button(text='EXIT')
         btn_e.bind(on_press=self.stop)
-        self.layout.add_widget(btn_e)
+        box.add_widget(btn_e)
+
+        btn_is = Button(text='Init story')
+        btn_is.bind(on_press=self._init_story)
+        box.add_widget(btn_is)
+
+        self.layout.add_widget(box)
 
     def pause_menu(self, instance):
         self.layout.clear_widgets()
@@ -111,8 +144,8 @@ class GUI(App):
         btn_m.bind(on_press=self.main_menu)
         self.layout.add_widget(btn_m)
 
-    def _next_level(self, instance):
-        self.game.next_level()
+    def _next_line(self, instance):
+        self.game.next_line()
         if self.game.the_end:
             self.show_titles()
         else:
@@ -139,7 +172,7 @@ class GUI(App):
                 self.layout.add_widget(btn)
         else:
             btn = Button(text='NEXT')
-            btn.bind(on_press=self._next_level)
+            btn.bind(on_press=self._next_line)
             self.layout.add_widget(btn)
 
         btn_p = Button(text='PAUSE')

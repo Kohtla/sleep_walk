@@ -48,9 +48,12 @@ class SQLDatabase(Database):
 
     # line
     def create_line(self, line):
-        line.save(force_insert=True)
-        return line
-    
+        try:
+            line.save(force_insert=True)
+            return line
+        except Exception:
+            return None
+
     def get_line(self, pk):
         return Line.get(Line.uuid == pk)
 
@@ -59,12 +62,10 @@ class SQLDatabase(Database):
 
     def get_first_line(self, level):
         return Line.get((Line.level == level) & Line.is_first)
-    
+
     def add_choices(self, line, choices):
         for choice in choices:
             Choice(line=line, choice=choice).save()
-    
+
     def get_choices(self, line):
         return Line.select().join(Choice).where(Choice.line == line)
-            
-

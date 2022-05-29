@@ -1,7 +1,7 @@
 
 from distutils.command.build_scripts import first_line_re
 from app.db import SQLDatabase
-from app.models import Level, Line
+from app.models import Level, Line, Choice
 
 import os
 import json
@@ -11,6 +11,7 @@ def init_story():
     db = SQLDatabase()
     Line.delete()
     Level.delete()
+    Choice.delete()
 
     try:
         db.create_person('Anna Maria Del Piero')

@@ -48,6 +48,14 @@ class GUI(App):
     game = None
     settings = None
 
+    def mouse_dispatch(self, window, pos):
+        for widget in window.children[0].walk():
+            if isinstance(widget, Button):
+                if widget.collide_point(*pos):
+                    widget.bold = True
+                else:
+                    widget.bold = False
+
     def __init__(self, game, settings, **kwargs):
         self.settings = settings
         self.game = game
@@ -55,6 +63,7 @@ class GUI(App):
         Window.size = (self.settings.get('WIDTH'), self.settings.get('HEIGHT'))
         Window.left = 50
         Window.top = 50
+        Window.bind(mouse_pos=self.mouse_dispatch)
         self.main_menu()
 
     def build(self):
@@ -69,14 +78,15 @@ class GUI(App):
 
     def _init_story(self, instance):
         init_story()
-
+    
     def main_menu(self, instance=None):
         self.layout.clear_widgets()
 
         box = MenuBoxLayout(orientation='vertical',
                             size=(200, 200),
                             size_hint=(None, None),
-                            pos=(700, 100))
+                            pos=(700, 100),
+                            spacing=5)
         bg = BackGround(source='img/menu.png',
                         size_hint=(None, None),
                         size=(self.settings.get('WIDTH'), self.settings.get('HEIGHT')))
@@ -84,12 +94,14 @@ class GUI(App):
         self.layout.add_widget(bg)
 
         btn_ng = Button(text='NEW GAME',
+                        height=95,
                         background_color=(0, 0, 0, 0),
                         color=(256, 256, 256, 1))
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
 
         btn_c = Button(text='CONTINUE',
+                       height=95,
                        background_color=(0, 0, 0, 0),
                        color=(256, 256, 256, 1),
                        halign='left')
@@ -97,12 +109,14 @@ class GUI(App):
         box.add_widget(btn_c)
 
         btn_lg = Button(text='LOAD GAME',
+                        height=95,
                         background_color=(0, 0, 0, 0),
                         color=(256, 256, 256, 1))
         btn_lg.bind(on_press=self.load_person_menu)
         box.add_widget(btn_lg)
 
         btn_e = Button(text='EXIT',
+                       height=95,
                        background_color=(0, 0, 0, 0),
                        color=(256, 256, 256, 1))
         btn_e.bind(on_press=self.stop)

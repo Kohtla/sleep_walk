@@ -1,4 +1,4 @@
-from turtle import position
+from turtle import position, title
 from app.init_story import init_story
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -6,6 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.image import Image
+from kivy.uix.popup import Popup
 
 from kivy.graphics import PopMatrix, PushMatrix, Rotate
 from kivy.core.window import Window
@@ -48,6 +49,8 @@ class GUI(App):
     layout = RootWidget()
     game = None
     settings = None
+
+    username = ''
 
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
@@ -165,6 +168,16 @@ class GUI(App):
         self.username = value
 
     def _create_person(self, instance):
+        if self.username == '':
+            close_btn = Button(text='OK')
+            popup = Popup(title='Person\'s name cannot be empty!',
+                          size=(300, 100),
+                          content=close_btn,
+                          size_hint=(None, None),
+                          auto_dismiss=True)
+            close_btn.bind(on_press=popup.dismiss)
+            popup.open()
+            return
         self.game.create_person(self.username)
         self.show_level()
 

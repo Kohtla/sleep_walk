@@ -52,9 +52,11 @@ class GUI(App):
         for widget in window.children[0].walk():
             if isinstance(widget, Button):
                 if widget.collide_point(*pos):
-                    widget.bold = True
+                    widget.font_size = "16sp"
+                    widget.font_name = "font/HelveticaNeueCyr-Bold.ttf"
                 else:
-                    widget.bold = False
+                    widget.font_size = "15sp"
+                    widget.font_name = "font/HelveticaNeueCyr-Medium.ttf"
 
     def __init__(self, game, settings, **kwargs):
         self.settings = settings
@@ -246,7 +248,8 @@ class GUI(App):
             box = BoxLayout(orientation='vertical',
                             size=(600, box_height),
                             size_hint=(None, None),
-                            pos=(180, 190 - box_height))
+                            pos=(180, 190 - box_height),
+                            spacing=2)
             for choice in choices:
                 btn = ChoiceButton(text=choice.text,
                                    background_color=(1, 1, 1, 1),

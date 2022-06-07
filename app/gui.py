@@ -1,3 +1,4 @@
+from turtle import position
 from app.init_story import init_story
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -137,19 +138,24 @@ class GUI(App):
 
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
-                        size_hint=(None, None))
+                        size_hint=(None, None),
+                        spacing=5,
+                        pos=(self.layout.center_x-100,self.layout.center_y-100))
 
         box.add_widget(Label(text='PAUSE'))
 
-        btn_r = Button(text='RESUME')
+        btn_r = Button(text='RESUME',
+                       height=95)
         btn_r.bind(on_press=self.show_level)
         box.add_widget(btn_r)
 
-        btn_m = Button(text='MAIN MENU')
+        btn_m = Button(text='MAIN MENU',
+                       height=95)
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
 
-        btn_e = Button(text='EXIT')
+        btn_e = Button(text='EXIT',
+                       height=95)
         btn_e.bind(on_press=self.stop)
         box.add_widget(btn_e)
 
@@ -167,7 +173,9 @@ class GUI(App):
 
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
-                        size_hint=(None, None))
+                        size_hint=(None, None),
+                        pos=(self.layout.center_x-100, self.layout.center_y-100),
+                        spacing=5)
 
         box.add_widget(Label(text='CREATE PERSON'))
 
@@ -175,13 +183,21 @@ class GUI(App):
         textinput.bind(text=self._username_changed)
         box.add_widget(textinput)
 
-        btn_m = Button(text='RETURN')
-        btn_m.bind(on_press=self.main_menu)
-        box.add_widget(btn_m)
+        buttons_orientation = BoxLayout(orientation='horizontal',
+                                        size=(200, 50),
+                                        size_hint=(None, None),
+                                        spacing=5)
+        box.add_widget(buttons_orientation)
 
-        btn_go = Button(text='CREATE')
+        btn_m = Button(text='RETURN',
+                       size=(100, 50))
+        btn_m.bind(on_press=self.main_menu)
+        buttons_orientation.add_widget(btn_m)
+
+        btn_go = Button(text='CREATE',
+                       size=(100, 50))
         btn_go.bind(on_press=self._create_person)
-        box.add_widget(btn_go)
+        buttons_orientation.add_widget(btn_go)
         self.layout.add_widget(box)
 
     def _load_game(self, instance):

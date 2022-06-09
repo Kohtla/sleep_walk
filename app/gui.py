@@ -1,4 +1,4 @@
-from turtle import position, title
+from kivy.config import ConfigParser
 from app.init_story import init_story
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -7,6 +7,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
+from kivy.uix.settings import SettingsWithTabbedPanel
 
 from kivy.graphics import PopMatrix, PushMatrix, Rotate
 from kivy.core.window import Window
@@ -56,11 +57,9 @@ class GUI(App):
         for widget in window.children[0].walk():
             if isinstance(widget, Button):
                 if widget.collide_point(*pos):
-                    widget.font_size = "16sp"
-                    widget.font_name = "font/HelveticaNeueCyr-Bold.ttf"
+                    widget.font_size = "17sp"
                 else:
                     widget.font_size = "15sp"
-                    widget.font_name = "font/HelveticaNeueCyr-Medium.ttf"
 
     def __init__(self, game, settings, **kwargs):
         self.settings = settings
@@ -73,7 +72,17 @@ class GUI(App):
         self.main_menu()
 
     def build(self):
+        self.settings_cls = SettingsWithTabbedPanel
+        self.use_kivy_settings = False
         return self.layout
+    
+    def build_config(self, config):
+        config.read("config/config.ini")
+        super().build_config(config)
+    
+    def build_settings(self, settings):
+        settings.add_json_panel("Language", self.config, "settings/settings_lang.json")
+        return super().build_settings(settings)
 
     def callback(self, instance):
         print('The button <%s> is being pressed' % instance.text)
@@ -100,14 +109,14 @@ class GUI(App):
         self.layout.add_widget(bg)
 
         btn_ng = Button(text='NEW GAME',
-                        height=95,
+                        height=80,
                         background_color=(0, 0, 0, 0),
                         color=(256, 256, 256, 1))
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
 
         btn_c = Button(text='CONTINUE',
-                       height=95,
+                       height=80,
                        background_color=(0, 0, 0, 0),
                        color=(256, 256, 256, 1),
                        halign='left')
@@ -115,14 +124,21 @@ class GUI(App):
         box.add_widget(btn_c)
 
         btn_lg = Button(text='LOAD GAME',
-                        height=95,
+                        height=80,
                         background_color=(0, 0, 0, 0),
                         color=(256, 256, 256, 1))
         btn_lg.bind(on_press=self.load_person_menu)
         box.add_widget(btn_lg)
 
+        btn_s = Button(text='SETTINGS',
+                       height=80,
+                       background_color=(0,0,0,0),
+                       color=(256,256,256,1))
+        btn_s.bind(on_press=self.open_settings)
+        box.add_widget(btn_s)
+
         btn_e = Button(text='EXIT',
-                       height=95,
+                       height=80,
                        background_color=(0, 0, 0, 0),
                        color=(256, 256, 256, 1))
         btn_e.bind(on_press=self.stop)
@@ -234,6 +250,9 @@ class GUI(App):
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
         self.layout.add_widget(box)
+    
+    def _set_lang(self, id):
+        print(id)
 
     def show_titles(self):
         self.layout.clear_widgets()

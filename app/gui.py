@@ -80,18 +80,12 @@ class GUI(App):
     def get_application_config(self, defaultpath='config/config.ini'):
         return super().get_application_config(defaultpath)
     
-    # def on_config_change(self, instance, section, key, value):
-    #     self.config.read("config/config.ini")
-    #     self.config.set(section, key, value)
-    #     self.config.write()
-    #     self.config.update_config("config/config.ini", True)
-    
     def build_config(self, config):
         config.read("config/config.ini")
         super().build_config(config)
     
     def build_settings(self, settings):
-        settings.add_json_panel("Language", self.config, "settings/settings.json")
+        settings.add_json_panel("Settings", self.config, "settings/settings.json")
         return super().build_settings(settings)
 
     def callback(self, instance):

@@ -1,5 +1,9 @@
 [
     {
+        "type": "title",
+        "title": "Language"
+    },
+    {
         "type": "options",
         "title": "Choose UI language",
         "section": "lang",
@@ -12,5 +16,13 @@
         "section": "lang",
         "key": "story_language",
         "options": ["Russian", "English"]
+    },
+    {
+        "type":"title",
+        "title": "Audio"
+    },
+    {
+        "type":"title",
+        "title": "Graphics"
     }
 ]

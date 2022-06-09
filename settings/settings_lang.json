@@ -1,9 +1,0 @@
-[
-    {
-        "type": "options",
-        "title": "Choose language",
-        "section": "lang",
-        "key": "ui_language",
-        "options": ["Russian", "English"]
-    }
-]

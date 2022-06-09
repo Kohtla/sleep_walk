@@ -1,3 +1,4 @@
+from cgitb import text
 from kivy.config import ConfigParser
 from app.init_story import init_story
 from kivy.uix.textinput import TextInput
@@ -76,12 +77,21 @@ class GUI(App):
         self.use_kivy_settings = False
         return self.layout
     
+    def get_application_config(self, defaultpath='config/config.ini'):
+        return super().get_application_config(defaultpath)
+    
+    # def on_config_change(self, instance, section, key, value):
+    #     self.config.read("config/config.ini")
+    #     self.config.set(section, key, value)
+    #     self.config.write()
+    #     self.config.update_config("config/config.ini", True)
+    
     def build_config(self, config):
         config.read("config/config.ini")
         super().build_config(config)
     
     def build_settings(self, settings):
-        settings.add_json_panel("Language", self.config, "settings/settings_lang.json")
+        settings.add_json_panel("Language", self.config, "settings/settings.json")
         return super().build_settings(settings)
 
     def callback(self, instance):
@@ -172,6 +182,11 @@ class GUI(App):
                        height=95)
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
+
+        btn_s = Button(text="SETTINGS",
+                       height=95)
+        btn_s.bind(on_press=self.open_settings)
+        box.add_widget(btn_s)
 
         btn_e = Button(text='EXIT',
                        height=95)

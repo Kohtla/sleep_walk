@@ -1,0 +1,16 @@
+[
+    {
+        "type": "options",
+        "title": "Choose UI language",
+        "section": "lang",
+        "key": "ui_language",
+        "options": ["Russian", "English"]
+    },
+    {
+        "type": "options",
+        "title": "Choose Story language",
+        "section": "lang",
+        "key": "story_language",
+        "options": ["Russian", "English"]
+    }
+]

@@ -64,6 +64,10 @@ class GUI(App):
 
     username = ''
 
+    kx = 1
+    ky = 1
+    last_func = None
+
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
             if isinstance(widget, Button):
@@ -84,7 +88,8 @@ class GUI(App):
     def build(self):
         self.settings_cls = SettingsWithTabbedPanel
         self.use_kivy_settings = False
-        Window.size = tuple(map(int, self.config.get("graphics", "resolution").split('x')))
+        w, h = map(int, self.config.get("graphics", "resolution").split('x'))
+        Window.size = (w,h)
         if self.config.get("graphics", "fullscreen") == "yes":
             Window.fullscreen = True
         else:
@@ -124,6 +129,26 @@ class GUI(App):
             pass
         return super().on_config_change(config, section, key, value)
 
+    def display_settings(self, settings):
+        try:
+            p = self.settings_popup
+        except AttributeError:
+            self.settings_popup = Popup(content=settings,
+                                        title='Settings',
+                                        size_hint=(0.8, 0.8))
+            p = self.settings_popup
+        if p.content is not settings:
+            p.content = settings
+        p.open()
+    
+    def close_settings(self, *args):
+        try:
+            p = self.settings_popup
+            self.last_func()
+            p.dismiss()
+        except AttributeError:
+            pass # Settings popup doesn't exist
+
     def callback(self, instance):
         print('The button <%s> is being pressed' % instance.text)
 
@@ -137,14 +162,17 @@ class GUI(App):
     def main_menu(self, instance=None):
         self.layout.clear_widgets()
 
+        self.last_func = self.main_menu
+
         conf = ConfigParser()
         conf.read(self.get_application_config())
         self.layout.size = (conf.get("graphics", "resolution").split('x')[0], conf.get("graphics", "resolution").split('x')[1])
-
+        self.kx = self.layout.size[0]/1280
+        self.ky = self.layout.size[1]/720
         box = MenuBoxLayout(orientation='vertical',
                             size=(200, 200),
                             size_hint=(None, None),
-                            pos=(700, 100),
+                            pos=(self.kx*700, self.ky*100),
                             spacing=5)
         bg = BackGround(source='img/menu.png',
                         size_hint=(None, None),
@@ -196,7 +224,9 @@ class GUI(App):
         self.layout.add_widget(box)
         self.layout.add_widget(btn_is)
 
-    def pause_menu(self, instance):
+    def pause_menu(self, instance=None):
+        self.last_func = self.pause_menu
+
         self.layout.clear_widgets()
 
         box = BoxLayout(orientation='vertical',
@@ -247,6 +277,7 @@ class GUI(App):
         self.show_level()
 
     def create_person_menu(self, instance):
+        self.last_func = self.create_person_menu
         self.layout.clear_widgets()
 
         box = BoxLayout(orientation='vertical',
@@ -283,6 +314,7 @@ class GUI(App):
         self.show_level()
 
     def load_person_menu(self, instance):
+        self.last_func = self.load_person_menu
         self.layout.clear_widgets()
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
@@ -331,10 +363,10 @@ class GUI(App):
         self.layout.add_widget(AlignedLabel(text='It is level %s for %s' %
                                             (self.game.level.name,
                                              self.game.person.name),
-                                            pos=(20, 680),
+                                            pos=(self.kx*20, self.ky*680),
                                             halign='left'))
         self.layout.add_widget(AlignedLabel(text='%s: %s' % (self.game.line.character, self.game.line.text),
-                                            pos=(180, 190),
+                                            pos=(self.kx*180, self.ky*190),
                                             halign='left'
                                             ))
 
@@ -345,7 +377,7 @@ class GUI(App):
             box = BoxLayout(orientation='vertical',
                             size=(600, box_height),
                             size_hint=(None, None),
-                            pos=(180, 190 - box_height),
+                            pos=(self.kx*180, self.ky*(190 - box_height)),
                             spacing=2)
             for choice in choices:
                 btn = ChoiceButton(text=choice.text,
@@ -360,7 +392,7 @@ class GUI(App):
             btn = Button(text='NEXT',
                          size=(160, 160),
                          size_hint=(None, None),
-                         pos=(1000, 50))
+                         pos=(1000*self.kx, 50*self.ky))
             btn.bind(on_press=self._next_line)
             self.layout.add_widget(btn)
 

@@ -1,5 +1,7 @@
-from cgitb import text
-from kivy.config import ConfigParser
+from kivy.config import Config, ConfigParser
+
+Config.set("graphics", "resizable", 0)
+
 from app.init_story import init_story
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -18,7 +20,15 @@ kivy.require('2.1.0')  # replace with your current kivy version !
 
 
 class BackGround(Image):
-    pass
+    main_size = (1280, 1920)
+    backgrounds = []
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        BackGround.backgrounds.append(self)
+    
+    def update_size():
+        for b in BackGround.backgrounds:
+            b.size = BackGround.main_size
 
 
 class AlignedLabel(Label):
@@ -66,7 +76,6 @@ class GUI(App):
         self.settings = settings
         self.game = game
         super().__init__(**kwargs)
-        Window.size = (self.settings.get('WIDTH'), self.settings.get('HEIGHT'))
         Window.left = 50
         Window.top = 50
         Window.bind(mouse_pos=self.mouse_dispatch)
@@ -75,18 +84,45 @@ class GUI(App):
     def build(self):
         self.settings_cls = SettingsWithTabbedPanel
         self.use_kivy_settings = False
+        Window.size = tuple(map(int, self.config.get("graphics", "resolution").split('x')))
+        if self.config.get("graphics", "fullscreen") == "yes":
+            Window.fullscreen = True
+        else:
+            Window.fullscreen = False
         return self.layout
     
     def get_application_config(self, defaultpath='config/config.ini'):
         return super().get_application_config(defaultpath)
     
     def build_config(self, config):
-        config.read("config/config.ini")
+        config.read("config/config.ini")        
         super().build_config(config)
     
     def build_settings(self, settings):
         settings.add_json_panel("Settings", self.config, "settings/settings.json")
         return super().build_settings(settings)
+    
+    def on_config_change(self, config, section, key, value):
+        if section == "graphics":
+            if key == "fullscreen":
+                if value == "yes":
+                    self.layout.get_root_window().fullscreen = True
+                else:
+                    self.layout.get_root_window().fullscreen = False
+            if key == "vsync":
+                #TODO: enable VSync somehow
+                pass
+            if key == "resolution":
+                self.layout.get_root_window().size = tuple(map(int, value.split('x')))
+                BackGround.main_size = tuple(map(int, value.split('x')))
+                BackGround.update_size()
+        if section == "audio":
+            # TODO: implement audio
+            pass
+        if section == "lang":
+            #TODO: set current localization
+            pass
+        return super().on_config_change(config, section, key, value)
 
     def callback(self, instance):
         print('The button <%s> is being pressed' % instance.text)
@@ -101,6 +137,10 @@ class GUI(App):
     def main_menu(self, instance=None):
         self.layout.clear_widgets()
 
+        conf = ConfigParser()
+        conf.read(self.get_application_config())
+        self.layout.size = (conf.get("graphics", "resolution").split('x')[0], conf.get("graphics", "resolution").split('x')[1])
+
         box = MenuBoxLayout(orientation='vertical',
                             size=(200, 200),
                             size_hint=(None, None),
@@ -108,7 +148,7 @@ class GUI(App):
                             spacing=5)
         bg = BackGround(source='img/menu.png',
                         size_hint=(None, None),
-                        size=(self.settings.get('WIDTH'), self.settings.get('HEIGHT')))
+                        size=self.layout.size)
 
         self.layout.add_widget(bg)
 

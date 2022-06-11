@@ -22,7 +22,40 @@
         "title": "Audio"
     },
     {
+        "type":"numeric",
+        "title":"Music volume",
+        "section":"audio",
+        "key":"music_volume"
+    },
+    {
+        "type":"numeric",
+        "title":"FX volume",
+        "section":"audio",
+        "key":"fx_volume"
+    },
+    {
         "type":"title",
         "title": "Graphics"
+    },
+    {
+        "type":"bool",
+        "section":"graphics",
+        "key":"fullscreen",
+        "title":"Fullscreen",
+        "values":["no", "yes"]
+    },
+    {
+        "type": "options",
+        "title": "Screen resolution",
+        "section": "graphics",
+        "key": "resolution",
+        "options": ["1280x720", "1920x1080"]
+    },
+    {
+        "type":"bool",
+        "section":"graphics",
+        "key":"vsync",
+        "title":"VSync",
+        "values":["no", "yes"]
     }
 ]

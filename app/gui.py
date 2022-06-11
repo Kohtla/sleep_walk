@@ -56,6 +56,16 @@ class MenuBoxLayout(BoxLayout):
 
         with self.canvas.after:
             PopMatrix()
+    
+class ButtonWithSound(Button):
+    fx_sound = None
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
+    def on_press(self):
+        ButtonWithSound.fx_sound.play()
+        return super().on_press()
+
 
 
 class GUI(App):
@@ -63,7 +73,7 @@ class GUI(App):
     game = None
     settings = None
     music = None
-    fx_sound = None
+    
 
     username = ''
 
@@ -84,8 +94,8 @@ class GUI(App):
         self.game = game
         super().__init__(**kwargs)
         self.music = SoundLoader.load("audio/game_music.mp3")
+        ButtonWithSound.fx_sound = SoundLoader.load("audio/try_fx_sound.ogg")
         self.music.loop = True
-        self.fx_sound = SoundLoader.load("audio/try_fx_sound.ogg")
         Window.left = 50
         Window.top = 50
         Window.bind(mouse_pos=self.mouse_dispatch)
@@ -109,7 +119,7 @@ class GUI(App):
     def build_config(self, config):
         config.read("config/config.ini")
         self.music.volume = float(config.get("audio", "music_volume"))/100
-        self.fx_sound.volume = float(config.get("audio", "fx_volume"))/100
+        ButtonWithSound.fx_sound.volume = float(config.get("audio", "fx_volume"))/100
         super().build_config(config)
     
     def build_settings(self, settings):
@@ -134,7 +144,7 @@ class GUI(App):
             if key == "music_volume":
                 self.music.volume = int(value) / 100
             if key == "fx_volume":
-                self.fx_sound.volume = int(value) / 100
+                ButtonWithSound.fx_sound.volume = int(value) / 100
         if section == "lang":
             #TODO: set current localization
             pass
@@ -173,8 +183,6 @@ class GUI(App):
     def main_menu(self, instance=None):
         self.layout.clear_widgets()
 
-        Button.bind(on_press=self.fx_sound.play)
-
         self.last_func = self.main_menu
 
         conf = ConfigParser()
@@ -193,14 +201,14 @@ class GUI(App):
 
         self.layout.add_widget(bg)
 
-        btn_ng = Button(text='NEW GAME',
+        btn_ng = ButtonWithSound(text='NEW GAME',
                         height=80,
                         background_color=(0, 0, 0, 0),
                         color=(256, 256, 256, 1))
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
 
-        btn_c = Button(text='CONTINUE',
+        btn_c = ButtonWithSound(text='CONTINUE',
                        height=80,
                        background_color=(0, 0, 0, 0),
                        color=(256, 256, 256, 1),
@@ -208,28 +216,28 @@ class GUI(App):
         btn_c.bind(on_press=self._continue)
         box.add_widget(btn_c)
 
-        btn_lg = Button(text='LOAD GAME',
+        btn_lg = ButtonWithSound(text='LOAD GAME',
                         height=80,
                         background_color=(0, 0, 0, 0),
                         color=(256, 256, 256, 1))
         btn_lg.bind(on_press=self.load_person_menu)
         box.add_widget(btn_lg)
 
-        btn_s = Button(text='SETTINGS',
+        btn_s = ButtonWithSound(text='SETTINGS',
                        height=80,
                        background_color=(0,0,0,0),
                        color=(256,256,256,1))
         btn_s.bind(on_press=self.open_settings)
         box.add_widget(btn_s)
 
-        btn_e = Button(text='EXIT',
+        btn_e = ButtonWithSound(text='EXIT',
                        height=80,
                        background_color=(0, 0, 0, 0),
                        color=(256, 256, 256, 1))
         btn_e.bind(on_press=self.stop)
         box.add_widget(btn_e)
 
-        btn_is = Button(text='Init story',
+        btn_is = ButtonWithSound(text='Init story',
                         size=(160, 40),
                         size_hint=(None, None))
         btn_is.bind(on_press=self._init_story)
@@ -250,22 +258,22 @@ class GUI(App):
 
         box.add_widget(Label(text='PAUSE'))
 
-        btn_r = Button(text='RESUME',
+        btn_r = ButtonWithSound(text='RESUME',
                        height=95)
         btn_r.bind(on_press=self.show_level)
         box.add_widget(btn_r)
 
-        btn_m = Button(text='MAIN MENU',
+        btn_m = ButtonWithSound(text='MAIN MENU',
                        height=95)
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
 
-        btn_s = Button(text="SETTINGS",
+        btn_s = ButtonWithSound(text="SETTINGS",
                        height=95)
         btn_s.bind(on_press=self.open_settings)
         box.add_widget(btn_s)
 
-        btn_e = Button(text='EXIT',
+        btn_e = ButtonWithSound(text='EXIT',
                        height=95)
         btn_e.bind(on_press=self.stop)
         box.add_widget(btn_e)
@@ -277,7 +285,7 @@ class GUI(App):
 
     def _create_person(self, instance):
         if self.username == '':
-            close_btn = Button(text='OK')
+            close_btn = ButtonWithSound(text='OK')
             popup = Popup(title='Person\'s name cannot be empty!',
                           size=(300, 100),
                           content=close_btn,
@@ -311,12 +319,12 @@ class GUI(App):
                                         spacing=5)
         box.add_widget(buttons_orientation)
 
-        btn_m = Button(text='RETURN',
+        btn_m = ButtonWithSound(text='RETURN',
                        size=(100, 50))
         btn_m.bind(on_press=self.main_menu)
         buttons_orientation.add_widget(btn_m)
 
-        btn_go = Button(text='CREATE',
+        btn_go = ButtonWithSound(text='CREATE',
                        size=(100, 50))
         btn_go.bind(on_press=self._create_person)
         buttons_orientation.add_widget(btn_go)
@@ -335,12 +343,12 @@ class GUI(App):
         box.add_widget(Label(text='Load person menu'))
 
         for person in self.game.list_persons():
-            btn = Button(text=person.name)
+            btn = ButtonWithSound(text=person.name)
             btn.person = person
             btn.bind(on_press=self._load_game)
             box.add_widget(btn)
 
-        btn_m = Button(text='RETURN')
+        btn_m = ButtonWithSound(text='RETURN')
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
         self.layout.add_widget(box)
@@ -355,7 +363,7 @@ class GUI(App):
                         size_hint=(None, None))
         box.add_widget(Label(text='THE END'))
 
-        btn_m = Button(text='MAIN MENU')
+        btn_m = ButtonWithSound(text='MAIN MENU')
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
         self.layout.add_widget(box)
@@ -402,14 +410,14 @@ class GUI(App):
                 box.add_widget(btn)
             self.layout.add_widget(box)
         else:
-            btn = Button(text='NEXT',
+            btn = ButtonWithSound(text='NEXT',
                          size=(160, 160),
                          size_hint=(None, None),
                          pos=(1000*self.kx, 50*self.ky))
             btn.bind(on_press=self._next_line)
             self.layout.add_widget(btn)
 
-        btn_p = Button(text='PAUSE',
+        btn_p = ButtonWithSound(text='PAUSE',
                        size=(160, 40),
                        size_hint=(None, None))
         btn_p.bind(on_press=self.pause_menu)

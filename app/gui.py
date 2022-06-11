@@ -14,6 +14,7 @@ from kivy.uix.settings import SettingsWithTabbedPanel
 
 from kivy.graphics import PopMatrix, PushMatrix, Rotate
 from kivy.core.window import Window
+from kivy.core.audio import SoundLoader
 from kivy.app import App
 import kivy
 kivy.require('2.1.0')  # replace with your current kivy version !
@@ -61,6 +62,8 @@ class GUI(App):
     layout = RootWidget()
     game = None
     settings = None
+    music = None
+    fx_sound = None
 
     username = ''
 
@@ -80,6 +83,9 @@ class GUI(App):
         self.settings = settings
         self.game = game
         super().__init__(**kwargs)
+        self.music = SoundLoader.load("audio/game_music.mp3")
+        self.music.loop = True
+        self.fx_sound = SoundLoader.load("audio/try_fx_sound.ogg")
         Window.left = 50
         Window.top = 50
         Window.bind(mouse_pos=self.mouse_dispatch)
@@ -94,13 +100,16 @@ class GUI(App):
             Window.fullscreen = True
         else:
             Window.fullscreen = False
+        self.music.play()
         return self.layout
     
     def get_application_config(self, defaultpath='config/config.ini'):
         return super().get_application_config(defaultpath)
     
     def build_config(self, config):
-        config.read("config/config.ini")        
+        config.read("config/config.ini")
+        self.music.volume = float(config.get("audio", "music_volume"))/100
+        self.fx_sound.volume = float(config.get("audio", "fx_volume"))/100
         super().build_config(config)
     
     def build_settings(self, settings):
@@ -122,8 +131,10 @@ class GUI(App):
                 BackGround.main_size = tuple(map(int, value.split('x')))
                 BackGround.update_size()
         if section == "audio":
-            # TODO: implement audio
-            pass
+            if key == "music_volume":
+                self.music.volume = int(value) / 100
+            if key == "fx_volume":
+                self.fx_sound.volume = int(value) / 100
         if section == "lang":
             #TODO: set current localization
             pass
@@ -161,6 +172,8 @@ class GUI(App):
     
     def main_menu(self, instance=None):
         self.layout.clear_widgets()
+
+        Button.bind(on_press=self.fx_sound.play)
 
         self.last_func = self.main_menu
 

@@ -21,7 +21,8 @@ kivy.require('2.1.0')  # replace with your current kivy version !
 
 class GUI(App):
     layout = RootWidget()
-    game = None
+    state = None
+    # TODO: move settings to the separate class
     settings = None
     music = None
 
@@ -40,9 +41,9 @@ class GUI(App):
                 else:
                     widget.font_size = "15sp"
 
-    def __init__(self, game, settings, **kwargs):
+    def __init__(self, state, settings, **kwargs):
         self.settings = settings
-        self.game = game
+        self.state = state
         super().__init__(**kwargs)
         self.music = SoundLoader.load("audio/game_music.mp3")
         ButtonWithSound.fx_sound = SoundLoader.load("audio/try_fx_sound.ogg")
@@ -127,7 +128,7 @@ class GUI(App):
         print('The button <%s> is being pressed' % instance.text)
 
     def _continue(self, instance):
-        self.game.start(self.game.get_latest_person())
+        self.state.start(self.state.get_latest_person())
         self.show_level()
 
     def _init_story(self, instance):
@@ -248,7 +249,7 @@ class GUI(App):
             close_btn.bind(on_press=popup.dismiss)
             popup.open()
             return
-        self.game.create_person(self.username)
+        self.state.create_person(self.username)
         self.show_level()
 
     def create_person_menu(self, instance):
@@ -286,7 +287,7 @@ class GUI(App):
         self.layout.add_widget(box)
 
     def _load_game(self, instance):
-        self.game.start(instance.person)
+        self.state.start(instance.person)
         self.show_level()
 
     def load_person_menu(self, instance):
@@ -297,7 +298,7 @@ class GUI(App):
                         size_hint=(None, None))
         box.add_widget(Label(text='Load person menu'))
 
-        for person in self.game.list_persons():
+        for person in self.state.list_persons():
             btn = ButtonWithSound(text=person.name)
             btn.person = person
             btn.bind(on_press=self._load_game)
@@ -324,29 +325,29 @@ class GUI(App):
         self.layout.add_widget(box)
 
     def _next_line(self, instance):
-        self.game.next_line()
-        if self.game.the_end:
+        self.state.next_line()
+        if self.state.the_end:
             self.show_titles()
         else:
             self.show_level()
 
     def _make_choice(self, instance):
-        self.game.make_choice(instance.choice)
+        self.state.make_choice(instance.choice)
         self.show_level()
 
     def show_level(self, instance=None):
         self.layout.clear_widgets()
         self.layout.add_widget(AlignedLabel(text='It is level %s for %s' %
-                                            (self.game.level.name,
-                                             self.game.person.name),
+                                            (self.state.level.name,
+                                             self.state.person.name),
                                             pos=(self.kx*20, self.ky*680),
                                             halign='left'))
-        self.layout.add_widget(AlignedLabel(text='%s: %s' % (self.game.line.character, self.game.line.text),
+        self.layout.add_widget(AlignedLabel(text='%s: %s' % (self.state.line.character, self.state.line.text),
                                             pos=(self.kx*180, self.ky*190),
                                             halign='left'
                                             ))
 
-        choices = self.game.get_choices()
+        choices = self.state.get_choices()
 
         if choices:
             box_height = 40 * len(choices)

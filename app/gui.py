@@ -1,71 +1,22 @@
+import kivy
+from kivy.app import App
+from kivy.core.audio import SoundLoader
+from kivy.core.window import Window
+from kivy.uix.settings import SettingsWithTabbedPanel
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from app.init_story import init_story
 from kivy.config import Config, ConfigParser
 
+from app.components import RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton
+
+# TODO: move somewhere in gui class
 Config.set("graphics", "resizable", 0)
 
-from app.init_story import init_story
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.label import Label
-from kivy.uix.image import Image
-from kivy.uix.popup import Popup
-from kivy.uix.settings import SettingsWithTabbedPanel
-
-from kivy.graphics import PopMatrix, PushMatrix, Rotate
-from kivy.core.window import Window
-from kivy.core.audio import SoundLoader
-from kivy.app import App
-import kivy
 kivy.require('2.1.0')  # replace with your current kivy version !
-
-
-class BackGround(Image):
-    main_size = (1280, 1920)
-    backgrounds = []
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        BackGround.backgrounds.append(self)
-    
-    def update_size():
-        for b in BackGround.backgrounds:
-            b.size = BackGround.main_size
-
-
-class AlignedLabel(Label):
-    def on_size(self, *args):
-        self.text_size = self.size
-
-
-class ChoiceButton(Button):
-    def on_size(self, *args):
-        self.text_size = self.size
-
-
-class RootWidget(FloatLayout):
-    def __init__(self, **kwargs):
-        super(RootWidget, self).__init__(**kwargs)
-
-
-class MenuBoxLayout(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        with self.canvas.before:
-            PushMatrix()
-            self.rotation = Rotate(angle=22.57, origin=self.center)
-
-        with self.canvas.after:
-            PopMatrix()
-    
-class ButtonWithSound(Button):
-    fx_sound = None
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-    
-    def on_press(self):
-        ButtonWithSound.fx_sound.play()
-        return super().on_press()
-
 
 
 class GUI(App):
@@ -73,8 +24,8 @@ class GUI(App):
     game = None
     settings = None
     music = None
-    
 
+    # TODO: move somewhere
     username = ''
 
     kx = 1
@@ -105,27 +56,29 @@ class GUI(App):
         self.settings_cls = SettingsWithTabbedPanel
         self.use_kivy_settings = False
         w, h = map(int, self.config.get("graphics", "resolution").split('x'))
-        Window.size = (w,h)
+        Window.size = (w, h)
         if self.config.get("graphics", "fullscreen") == "yes":
             Window.fullscreen = True
         else:
             Window.fullscreen = False
         self.music.play()
         return self.layout
-    
+
     def get_application_config(self, defaultpath='config/config.ini'):
         return super().get_application_config(defaultpath)
-    
+
     def build_config(self, config):
         config.read("config/config.ini")
         self.music.volume = float(config.get("audio", "music_volume"))/100
-        ButtonWithSound.fx_sound.volume = float(config.get("audio", "fx_volume"))/100
+        ButtonWithSound.fx_sound.volume = float(
+            config.get("audio", "fx_volume"))/100
         super().build_config(config)
-    
+
     def build_settings(self, settings):
-        settings.add_json_panel("Settings", self.config, "settings/settings.json")
+        settings.add_json_panel("Settings", self.config,
+                                "settings/settings.json")
         return super().build_settings(settings)
-    
+
     def on_config_change(self, config, section, key, value):
         if section == "graphics":
             if key == "fullscreen":
@@ -134,7 +87,7 @@ class GUI(App):
                 else:
                     self.layout.get_root_window().fullscreen = False
             if key == "vsync":
-                #TODO: enable VSync somehow
+                # TODO: enable VSync somehow
                 pass
             if key == "resolution":
                 self.layout.get_root_window().size = tuple(map(int, value.split('x')))
@@ -146,7 +99,7 @@ class GUI(App):
             if key == "fx_volume":
                 ButtonWithSound.fx_sound.volume = int(value) / 100
         if section == "lang":
-            #TODO: set current localization
+            # TODO: set current localization
             pass
         return super().on_config_change(config, section, key, value)
 
@@ -161,14 +114,14 @@ class GUI(App):
         if p.content is not settings:
             p.content = settings
         p.open()
-    
+
     def close_settings(self, *args):
         try:
             p = self.settings_popup
             self.last_func()
             p.dismiss()
         except AttributeError:
-            pass # Settings popup doesn't exist
+            pass  # Settings popup doesn't exist
 
     def callback(self, instance):
         print('The button <%s> is being pressed' % instance.text)
@@ -179,7 +132,7 @@ class GUI(App):
 
     def _init_story(self, instance):
         init_story()
-    
+
     def main_menu(self, instance=None):
         self.layout.clear_widgets()
 
@@ -187,7 +140,8 @@ class GUI(App):
 
         conf = ConfigParser()
         conf.read(self.get_application_config())
-        self.layout.size = (conf.get("graphics", "resolution").split('x')[0], conf.get("graphics", "resolution").split('x')[1])
+        self.layout.size = (conf.get("graphics", "resolution").split(
+            'x')[0], conf.get("graphics", "resolution").split('x')[1])
         self.kx = self.layout.size[0]/1280
         self.ky = self.layout.size[1]/720
         box = MenuBoxLayout(orientation='vertical',
@@ -202,44 +156,44 @@ class GUI(App):
         self.layout.add_widget(bg)
 
         btn_ng = ButtonWithSound(text='NEW GAME',
-                        height=80,
-                        background_color=(0, 0, 0, 0),
-                        color=(256, 256, 256, 1))
+                                 height=80,
+                                 background_color=(0, 0, 0, 0),
+                                 color=(256, 256, 256, 1))
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
 
         btn_c = ButtonWithSound(text='CONTINUE',
-                       height=80,
-                       background_color=(0, 0, 0, 0),
-                       color=(256, 256, 256, 1),
-                       halign='left')
+                                height=80,
+                                background_color=(0, 0, 0, 0),
+                                color=(256, 256, 256, 1),
+                                halign='left')
         btn_c.bind(on_press=self._continue)
         box.add_widget(btn_c)
 
         btn_lg = ButtonWithSound(text='LOAD GAME',
-                        height=80,
-                        background_color=(0, 0, 0, 0),
-                        color=(256, 256, 256, 1))
+                                 height=80,
+                                 background_color=(0, 0, 0, 0),
+                                 color=(256, 256, 256, 1))
         btn_lg.bind(on_press=self.load_person_menu)
         box.add_widget(btn_lg)
 
         btn_s = ButtonWithSound(text='SETTINGS',
-                       height=80,
-                       background_color=(0,0,0,0),
-                       color=(256,256,256,1))
+                                height=80,
+                                background_color=(0, 0, 0, 0),
+                                color=(256, 256, 256, 1))
         btn_s.bind(on_press=self.open_settings)
         box.add_widget(btn_s)
 
         btn_e = ButtonWithSound(text='EXIT',
-                       height=80,
-                       background_color=(0, 0, 0, 0),
-                       color=(256, 256, 256, 1))
+                                height=80,
+                                background_color=(0, 0, 0, 0),
+                                color=(256, 256, 256, 1))
         btn_e.bind(on_press=self.stop)
         box.add_widget(btn_e)
 
         btn_is = ButtonWithSound(text='Init story',
-                        size=(160, 40),
-                        size_hint=(None, None))
+                                 size=(160, 40),
+                                 size_hint=(None, None))
         btn_is.bind(on_press=self._init_story)
 
         self.layout.add_widget(box)
@@ -254,27 +208,27 @@ class GUI(App):
                         size=(200, 200),
                         size_hint=(None, None),
                         spacing=5,
-                        pos=(self.layout.center_x-100,self.layout.center_y-100))
+                        pos=(self.layout.center_x-100, self.layout.center_y-100))
 
         box.add_widget(Label(text='PAUSE'))
 
         btn_r = ButtonWithSound(text='RESUME',
-                       height=95)
+                                height=95)
         btn_r.bind(on_press=self.show_level)
         box.add_widget(btn_r)
 
         btn_m = ButtonWithSound(text='MAIN MENU',
-                       height=95)
+                                height=95)
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
 
         btn_s = ButtonWithSound(text="SETTINGS",
-                       height=95)
+                                height=95)
         btn_s.bind(on_press=self.open_settings)
         box.add_widget(btn_s)
 
         btn_e = ButtonWithSound(text='EXIT',
-                       height=95)
+                                height=95)
         btn_e.bind(on_press=self.stop)
         box.add_widget(btn_e)
 
@@ -304,7 +258,8 @@ class GUI(App):
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
                         size_hint=(None, None),
-                        pos=(self.layout.center_x-100, self.layout.center_y-100),
+                        pos=(self.layout.center_x-100,
+                             self.layout.center_y-100),
                         spacing=5)
 
         box.add_widget(Label(text='CREATE PERSON'))
@@ -320,12 +275,12 @@ class GUI(App):
         box.add_widget(buttons_orientation)
 
         btn_m = ButtonWithSound(text='RETURN',
-                       size=(100, 50))
+                                size=(100, 50))
         btn_m.bind(on_press=self.main_menu)
         buttons_orientation.add_widget(btn_m)
 
         btn_go = ButtonWithSound(text='CREATE',
-                       size=(100, 50))
+                                 size=(100, 50))
         btn_go.bind(on_press=self._create_person)
         buttons_orientation.add_widget(btn_go)
         self.layout.add_widget(box)
@@ -352,7 +307,7 @@ class GUI(App):
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
         self.layout.add_widget(box)
-    
+
     def _set_lang(self, id):
         print(id)
 
@@ -411,14 +366,14 @@ class GUI(App):
             self.layout.add_widget(box)
         else:
             btn = ButtonWithSound(text='NEXT',
-                         size=(160, 160),
-                         size_hint=(None, None),
-                         pos=(1000*self.kx, 50*self.ky))
+                                  size=(160, 160),
+                                  size_hint=(None, None),
+                                  pos=(1000*self.kx, 50*self.ky))
             btn.bind(on_press=self._next_line)
             self.layout.add_widget(btn)
 
         btn_p = ButtonWithSound(text='PAUSE',
-                       size=(160, 40),
-                       size_hint=(None, None))
+                                size=(160, 40),
+                                size_hint=(None, None))
         btn_p.bind(on_press=self.pause_menu)
         self.layout.add_widget(btn_p)

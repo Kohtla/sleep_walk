@@ -1,15 +1,16 @@
 from .gui import GUI
-from .game import Game
+from .state import State
 from .db import SQLDatabase
 from .settings import dev
+
 
 def main():
     print('Start game')
     # create and migrate database
     db = SQLDatabase()
     # run main loop and
-    game = Game(db)    
-    ui = GUI(game, dev)
+    state = State(db)
+    ui = GUI(state, dev)
     ui.run()
 
     print('Exit game')

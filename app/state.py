@@ -2,7 +2,7 @@ from app.db.database import Database
 from app.models.person import Person
 
 
-class Game:
+class State:
     is_running = True
     db = Database()
     person = None

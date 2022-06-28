@@ -1,4 +1,3 @@
-from typing import Any
 import kivy
 from kivy.app import App
 from kivy.core.audio import SoundLoader
@@ -204,58 +203,50 @@ class GUI(App):
 
         conf = ConfigParser()
         conf.read(self.get_application_config())
-        self.layout.size = (conf.get("graphics", "resolution").split(
-            'x')[0], conf.get("graphics", "resolution").split('x')[1])
+        self.layout.size = (conf.get("graphics", "resolution").split('x')[0], conf.get("graphics", "resolution").split('x')[1])
         self.kx = self.layout.size[0]/1280
         self.ky = self.layout.size[1]/720
         self.redraw_background()
         pers = [p for p in self.state.list_persons()]
         box = MenuBoxLayout(orientation='vertical',
-                            size_hint=(0.5, 0.3),
-                            pos=(self.kx*500, self.ky*100),
+                            size=(200, 200),
+                            size_hint=(None, None),
+                            pos=(self.kx*700, self.ky*100),
                             spacing=5)
-
+        
         if len(pers) != 0:
             btn_c = ButtonWithSound(text='CONTINUE',
                                     height=80,
-                                    font_size='96px',
                                     background_color=(0, 0, 0, 0),
                                     color=(256, 256, 256, 1),
                                     halign='left')
             btn_c.bind(on_press=self._continue)
             box.add_widget(btn_c)
 
-        btn_ng = ButtonWithSound(text='[color=347BA9]NEW GAME[/color]',
-                                 markup=True,
-                                 size_hint=(None, None),
-                                 font_size='96px' if len(
-                                     pers) == 0 else '60px',
+        btn_ng = ButtonWithSound(text='NEW GAME',
+                                 height=80,
                                  background_color=(0, 0, 0, 0),
                                  color=(256, 256, 256, 1))
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
 
-        if len(pers) != 0:
+        if len(pers)!=0:
             btn_lg = ButtonWithSound(text='LOAD GAME',
-                                     height=80,
-                                     font_size='60px',
-                                     background_color=(0, 0, 0, 0),
-                                     color=(256, 256, 256, 1))
+                                    height=80,
+                                    background_color=(0, 0, 0, 0),
+                                    color=(256, 256, 256, 1))
             btn_lg.bind(on_press=self.load_person_menu)
             box.add_widget(btn_lg)
 
         btn_s = ButtonWithSound(text='SETTINGS',
                                 height=80,
-                                font_size='60px',
                                 background_color=(0, 0, 0, 0),
                                 color=(256, 256, 256, 1))
         btn_s.bind(on_press=self.open_settings)
         box.add_widget(btn_s)
 
         btn_e = ButtonWithSound(text='EXIT',
-                                pos_hint={'right':1},
                                 height=80,
-                                font_size='60px',
                                 background_color=(0, 0, 0, 0),
                                 color=(256, 256, 256, 1))
         btn_e.bind(on_press=self.stop)

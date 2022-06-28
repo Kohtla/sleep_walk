@@ -36,7 +36,9 @@ class GUI(App):
     last_func = None
 
     girls_paths = ['img/girl1.png', 'img/girl2.jpg']
+    last_anim_path = 'img/girl1.png'
     girls_positions = [(-400, 5), (1, 20)]
+    last_anim_pos = (-400, 5)
 
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
@@ -62,6 +64,8 @@ class GUI(App):
         self.settings_cls = SettingsWithTabbedPanel
         self.use_kivy_settings = False
         w, h = map(int, self.config.get("graphics", "resolution").split('x'))
+        self.kx = w/1280
+        self.ky = h/720
         Window.size = (w, h)
         if self.config.get("graphics", "fullscreen") == "yes":
             Window.fullscreen = True
@@ -75,6 +79,9 @@ class GUI(App):
 
     def build_config(self, config):
         config.read("config/config.ini")
+        size = tuple(map(int, config.get("graphics", "resolution").split('x')))
+        self.kx = size[0]/1280
+        self.ky = size[1]/720
         self.music.volume = float(config.get("audio", "music_volume"))/100
         ButtonWithSound.fx_sound.volume = float(
             config.get("audio", "fx_volume"))/100
@@ -96,9 +103,12 @@ class GUI(App):
                 # TODO: enable VSync somehow
                 pass
             if key == "resolution":
-                self.layout.get_root_window().size = tuple(map(int, value.split('x')))
+                xy = tuple(map(int, value.split('x')))
+                self.layout.get_root_window().size = xy
                 BackGround.main_size = tuple(map(int, value.split('x')))
                 BackGround.update_size()
+                self.kx = xy[0]/1280
+                self.ky = xy[1]/720
         if section == "audio":
             if key == "music_volume":
                 self.music.volume = int(value) / 100
@@ -122,6 +132,9 @@ class GUI(App):
         p.open()
 
     def close_settings(self, *args):
+        Animation.cancel_all(self.girl_image)
+        self.girls_paths = ['img/girl1.png', 'img/girl2.jpg']
+        self.girls_positions = [(-400, 5), (1, 20)]
         try:
             p = self.settings_popup
             self.last_func()
@@ -139,14 +152,14 @@ class GUI(App):
     def _init_story(self, instance):
         init_story()
 
+    # This function changes the source of the image and creates next animation recursively
     def _next_girl_image(self, widget):
+        print(self.kx, self.ky)
         girl_path = self.girls_paths.pop()
         self.girls_paths.insert(0, girl_path)
         widget.source = girl_path
-        print('1')
         next_position = self.girls_positions.pop()
         self.girls_positions.insert(0, next_position)
-        print(next_position)
         anim = Animation(d=2,
                          t='in_cubic',
                          opacity=1)
@@ -158,25 +171,27 @@ class GUI(App):
                           t='in_cubic',
                           opacity=0)
         anim.on_complete = self._next_girl_image
+        
         anim.start(widget)
 
     def redraw_background(self):
         self.layout.clear_widgets()
-        girl_image = Image(source='img/girl1.png',
+        
+        self.girl_image = Image(source='img/girl1.png',
                            pos=(1*self.kx, 20*self.ky))
 
-        self.layout.add_widget(girl_image)
+        self.layout.add_widget(self.girl_image)
 
         anim = Animation(d=8,
                          t='in_out_cubic',
-                         pos=(-400*self.kx, 5*self.ky))
-        op_anim = Animation(d=2,
-                            t='in_cubic',
-                            opacity=0)
-        op_anim.on_complete = self._next_girl_image
-        anim += op_anim
-
-        anim.start(girl_image)
+                         x=-400*self.kx, 
+                         y=5*self.ky)
+        anim += Animation(d=2,
+                          t='in_cubic',
+                          opacity=0)
+        anim.on_complete = self._next_girl_image
+        Animation.cancel_all(self.girl_image)
+        anim.start(self.girl_image)
 
         bg = BackGround(source='img/menu.png',
                         size_hint=(None, None),

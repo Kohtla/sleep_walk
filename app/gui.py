@@ -1,4 +1,3 @@
-from turtle import pos
 import kivy
 from kivy.app import App
 from kivy.core.audio import SoundLoader

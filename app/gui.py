@@ -1,3 +1,4 @@
+from turtle import pos
 import kivy
 from kivy.app import App
 from kivy.core.audio import SoundLoader
@@ -8,6 +9,8 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.uix.image import Image
+from kivy.animation import Animation
 from app.init_story import init_story
 from kivy.config import Config, ConfigParser
 
@@ -32,6 +35,9 @@ class GUI(App):
     kx = 1
     ky = 1
     last_func = None
+
+    girls_paths = ['img/girl1.png', 'img/girl2.jpg']
+    girls_positions = [(-400, 5), (1, 20)]
 
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
@@ -134,8 +140,53 @@ class GUI(App):
     def _init_story(self, instance):
         init_story()
 
-    def main_menu(self, instance=None):
+    def _next_girl_image(self, widget):
+        girl_path = self.girls_paths.pop()
+        self.girls_paths.insert(0, girl_path)
+        widget.source = girl_path
+        print('1')
+        next_position = self.girls_positions.pop()
+        self.girls_positions.insert(0, next_position)
+        print(next_position)
+        anim = Animation(d=2,
+                         t='in_cubic',
+                         opacity=1)
+        anim += Animation(d=8,
+                          t='in_out_cubic',
+                          x=next_position[0]*self.kx,
+                          y=next_position[1]*self.ky)
+        anim += Animation(d=2,
+                          t='in_cubic',
+                          opacity=0)
+        anim.on_complete = self._next_girl_image
+        anim.start(widget)
+
+    def redraw_background(self):
         self.layout.clear_widgets()
+        girl_image = Image(source='img/girl1.png',
+                           pos=(1*self.kx, 20*self.ky))
+
+        self.layout.add_widget(girl_image)
+
+        anim = Animation(d=8,
+                         t='in_out_cubic',
+                         pos=(-400*self.kx, 5*self.ky))
+        op_anim = Animation(d=2,
+                            t='in_cubic',
+                            opacity=0)
+        op_anim.on_complete = self._next_girl_image
+        anim += op_anim
+
+        anim.start(girl_image)
+
+        bg = BackGround(source='img/menu.png',
+                        size_hint=(None, None),
+                        size=self.layout.size)
+
+        self.layout.add_widget(bg)
+
+    def main_menu(self, instance=None):
+        self.redraw_background()
 
         self.last_func = self.main_menu
 
@@ -203,7 +254,7 @@ class GUI(App):
     def pause_menu(self, instance=None):
         self.last_func = self.pause_menu
 
-        self.layout.clear_widgets()
+        self.redraw_background()
 
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
@@ -254,7 +305,7 @@ class GUI(App):
 
     def create_person_menu(self, instance):
         self.last_func = self.create_person_menu
-        self.layout.clear_widgets()
+        self.redraw_background()
 
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
@@ -292,7 +343,7 @@ class GUI(App):
 
     def load_person_menu(self, instance):
         self.last_func = self.load_person_menu
-        self.layout.clear_widgets()
+        self.redraw_background()
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
                         size_hint=(None, None))
@@ -313,7 +364,7 @@ class GUI(App):
         print(id)
 
     def show_titles(self):
-        self.layout.clear_widgets()
+        self.redraw_background()
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
                         size_hint=(None, None))
@@ -336,7 +387,7 @@ class GUI(App):
         self.show_level()
 
     def show_level(self, instance=None):
-        self.layout.clear_widgets()
+        self.redraw_background()
         self.layout.add_widget(AlignedLabel(text='It is level %s for %s' %
                                             (self.state.level.name,
                                              self.state.person.name),

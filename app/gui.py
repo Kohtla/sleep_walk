@@ -1,3 +1,4 @@
+from typing import Any
 import kivy
 from kivy.app import App
 from kivy.core.audio import SoundLoader
@@ -36,17 +37,15 @@ class GUI(App):
     last_func = None
 
     girls_paths = ['img/girl1.png', 'img/girl2.jpg']
-    last_anim_path = 'img/girl1.png'
     girls_positions = [(-400, 5), (1, 20)]
-    last_anim_pos = (-400, 5)
 
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
             if isinstance(widget, Button):
                 if widget.collide_point(*pos):
-                    widget.font_size = "17sp"
+                    widget.bold = True
                 else:
-                    widget.font_size = "15sp"
+                    widget.bold = False
 
     def __init__(self, state, settings, **kwargs):
         self.settings = settings
@@ -171,20 +170,20 @@ class GUI(App):
                           t='in_cubic',
                           opacity=0)
         anim.on_complete = self._next_girl_image
-        
+
         anim.start(widget)
 
     def redraw_background(self):
         self.layout.clear_widgets()
-        
+
         self.girl_image = Image(source='img/girl1.png',
-                           pos=(1*self.kx, 20*self.ky))
+                                pos=(1*self.kx, 20*self.ky))
 
         self.layout.add_widget(self.girl_image)
 
         anim = Animation(d=8,
                          t='in_out_cubic',
-                         x=-400*self.kx, 
+                         x=-400*self.kx,
                          y=5*self.ky)
         anim += Animation(d=2,
                           t='in_cubic',
@@ -200,7 +199,6 @@ class GUI(App):
         self.layout.add_widget(bg)
 
     def main_menu(self, instance=None):
-        self.redraw_background()
 
         self.last_func = self.main_menu
 
@@ -210,48 +208,54 @@ class GUI(App):
             'x')[0], conf.get("graphics", "resolution").split('x')[1])
         self.kx = self.layout.size[0]/1280
         self.ky = self.layout.size[1]/720
+        self.redraw_background()
+        pers = [p for p in self.state.list_persons()]
         box = MenuBoxLayout(orientation='vertical',
-                            size=(200, 200),
-                            size_hint=(None, None),
-                            pos=(self.kx*700, self.ky*100),
+                            size_hint=(0.5, 0.3),
+                            pos=(self.kx*500, self.ky*100),
                             spacing=5)
-        bg = BackGround(source='img/menu.png',
-                        size_hint=(None, None),
-                        size=self.layout.size)
 
-        self.layout.add_widget(bg)
+        if len(pers) != 0:
+            btn_c = ButtonWithSound(text='CONTINUE',
+                                    height=80,
+                                    font_size='96px',
+                                    background_color=(0, 0, 0, 0),
+                                    color=(256, 256, 256, 1),
+                                    halign='left')
+            btn_c.bind(on_press=self._continue)
+            box.add_widget(btn_c)
 
-        btn_ng = ButtonWithSound(text='NEW GAME',
-                                 height=80,
+        btn_ng = ButtonWithSound(text='[color=347BA9]NEW GAME[/color]',
+                                 markup=True,
+                                 size_hint=(None, None),
+                                 font_size='96px' if len(
+                                     pers) == 0 else '60px',
                                  background_color=(0, 0, 0, 0),
                                  color=(256, 256, 256, 1))
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
 
-        btn_c = ButtonWithSound(text='CONTINUE',
-                                height=80,
-                                background_color=(0, 0, 0, 0),
-                                color=(256, 256, 256, 1),
-                                halign='left')
-        btn_c.bind(on_press=self._continue)
-        box.add_widget(btn_c)
-
-        btn_lg = ButtonWithSound(text='LOAD GAME',
-                                 height=80,
-                                 background_color=(0, 0, 0, 0),
-                                 color=(256, 256, 256, 1))
-        btn_lg.bind(on_press=self.load_person_menu)
-        box.add_widget(btn_lg)
+        if len(pers) != 0:
+            btn_lg = ButtonWithSound(text='LOAD GAME',
+                                     height=80,
+                                     font_size='60px',
+                                     background_color=(0, 0, 0, 0),
+                                     color=(256, 256, 256, 1))
+            btn_lg.bind(on_press=self.load_person_menu)
+            box.add_widget(btn_lg)
 
         btn_s = ButtonWithSound(text='SETTINGS',
                                 height=80,
+                                font_size='60px',
                                 background_color=(0, 0, 0, 0),
                                 color=(256, 256, 256, 1))
         btn_s.bind(on_press=self.open_settings)
         box.add_widget(btn_s)
 
         btn_e = ButtonWithSound(text='EXIT',
+                                pos_hint={'right':1},
                                 height=80,
+                                font_size='60px',
                                 background_color=(0, 0, 0, 0),
                                 color=(256, 256, 256, 1))
         btn_e.bind(on_press=self.stop)
@@ -378,7 +382,7 @@ class GUI(App):
         print(id)
 
     def show_titles(self):
-        self.redraw_background()
+        self.layout.clear_widgets()
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),
                         size_hint=(None, None))

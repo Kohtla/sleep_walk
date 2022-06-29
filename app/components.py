@@ -42,7 +42,7 @@ class MenuBoxLayout(BoxLayout):
         super().__init__(**kwargs)
         with self.canvas.before:
             PushMatrix()
-            self.rotation = Rotate(angle=22.57, origin=self.center)
+            self.rotation = Rotate(angle=20, origin=self.center)
 
         with self.canvas.after:
             PopMatrix()
@@ -50,9 +50,11 @@ class MenuBoxLayout(BoxLayout):
 
 class ButtonWithSound(Button):
     fx_sound = None
+    base_color = (0,0,0,1)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.base_color = kwargs.get('color', (0,0,0,1))
 
     def on_press(self):
         ButtonWithSound.fx_sound.play()

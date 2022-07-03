@@ -1,3 +1,4 @@
+from turtle import color
 import kivy
 from kivy.app import App
 from kivy.core.audio import SoundLoader
@@ -13,7 +14,7 @@ from kivy.animation import Animation
 from app.init_story import init_story
 from kivy.config import Config, ConfigParser
 
-from app.components import RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton
+from app.components import BulletButton, RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton, Bullet
 
 # TODO: move somewhere in gui class
 Config.set("graphics", "resizable", 0)
@@ -228,16 +229,16 @@ class GUI(App):
             btn_c.bind(on_press=self._continue)
             box.add_widget(btn_c)
 
-        btn_ng = ButtonWithSound(text='NEW GAME •',
-                                 font_size='96px' if len(
-                                     pers) == 0 else '60px',
-                                 height=100 if len(pers) == 0 else 65,
-                                 width=600,
-                                 size_hint=(1, None),
-                                 background_color=(1, 1, 1, 0),
-                                 color=(52/256, 123/256, 169/256, 1),
-                                 halign='right',
-                                 bold=True)
+        btn_ng = BulletButton(text='NEW GAME',
+                              font_size='96px' if len(
+                                  pers) == 0 else '60px',
+                              height=100 if len(pers) == 0 else 65,
+                              width=600,
+                              size_hint=(1, None),
+                              background_color=(1, 1, 1, 0),
+                              color=(52/256, 123/256, 169/256, 1),
+                              halign='right',
+                              bold=True)
         btn_ng.text_size = btn_ng.size
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
@@ -384,9 +385,12 @@ class GUI(App):
         self.last_func = self.load_person_menu
         self.redraw_background()
         box = BoxLayout(orientation='vertical',
-                        size=(200, 200),
-                        size_hint=(None, None))
-        box.add_widget(Label(text='Load person menu'))
+                        size=(500, 450),
+                        size_hint=(None, None),
+                        pos=(self.layout.center_x-200, self.layout.center_y-350))
+        box.add_widget(Label(text='Load person menu', font_size='20px',
+                             color=(0, 0, 0, 1),
+                             height=30, size_hint=(1, 0.1), text_size=(500, 30), halign='left'))
 
         for person in self.state.list_persons():
             btn = ButtonWithSound(text=person.name)
@@ -394,7 +398,14 @@ class GUI(App):
             btn.bind(on_press=self._load_game)
             box.add_widget(btn)
 
-        btn_m = ButtonWithSound(text='RETURN')
+        btn_m = ButtonWithSound(text=' RETURN',
+                                font_size='20px',
+                                height=50,
+                                size_hint=(1, 0.1),
+                                text_size=(500, 25),
+                                halign='left',
+                                background_color=(0, 0, 0, 0),
+                                color=(0, 0, 0, 1))
         btn_m.bind(on_press=self.main_menu)
         box.add_widget(btn_m)
         self.layout.add_widget(box)

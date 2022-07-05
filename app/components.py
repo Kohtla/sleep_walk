@@ -1,5 +1,6 @@
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 
 from kivy.uix.image import Image
 from kivy.uix.label import Label
@@ -62,28 +63,26 @@ class ButtonWithSound(Button):
 
 
 class Bullet(Widget):
-    radius = 20
     color = (0, 0, 0)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        print(self.center)
-        with self.canvas:
+        print(self.x)
+        with self.canvas.before:
             Color(*self.color)
-            Ellipse(size=(self.radius*2, self.radius*2),
-                    pos=(self.center_x, self.center_y))
+            Ellipse(size=self.size)
 
 
 class BulletButton(BoxLayout):
 
     def __init__(self, **kwargs):
         btn = ButtonWithSound(**kwargs)
-        bul = Bullet()
+        bul = Bullet(size=kwargs.get("bullet_size", (50, 50)))
         super().__init__(pos=kwargs.get("pos", (0, 0)),
-                         width=kwargs.get("width")+5 +
-                         kwargs.get("radius", 10)*2,
+                         width=kwargs.get("width") +
+                         kwargs.get("bullet_size", (50, 50))[0],
                          height=kwargs.get("height"),
-                         orientation='horizontal',
-                         spacing=5)
+                         orientation='horizontal')
         self.add_widget(btn)
+        print(self.pos)
         self.add_widget(bul)

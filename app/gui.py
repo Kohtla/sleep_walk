@@ -239,6 +239,7 @@ class GUI(App):
                               color=(52/256, 123/256, 169/256, 1),
                               halign='right',
                               bold=True)
+        
         btn_ng.text_size = btn_ng.size
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)

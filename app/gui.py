@@ -229,7 +229,7 @@ class GUI(App):
             btn_c.bind(on_press=self._continue)
             box.add_widget(btn_c)
 
-        btn_ng = BulletButton(text='NEW GAME',
+        btn_ng = ButtonWithSound(text='NEW GAME',
                               font_size='96px' if len(
                                   pers) == 0 else '60px',
                               height=100 if len(pers) == 0 else 65,

@@ -10,6 +10,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image
+from kivy.uix.scrollview import ScrollView
 from kivy.animation import Animation
 from app.init_story import init_story
 from kivy.config import Config, ConfigParser
@@ -230,16 +231,16 @@ class GUI(App):
             box.add_widget(btn_c)
 
         btn_ng = ButtonWithSound(text='NEW GAME',
-                              font_size='96px' if len(
-                                  pers) == 0 else '60px',
-                              height=100 if len(pers) == 0 else 65,
-                              width=600,
-                              size_hint=(1, None),
-                              background_color=(1, 1, 1, 0),
-                              color=(52/256, 123/256, 169/256, 1),
-                              halign='right',
-                              bold=True)
-        
+                                 font_size='96px' if len(
+                                     pers) == 0 else '60px',
+                                 height=100 if len(pers) == 0 else 65,
+                                 width=600,
+                                 size_hint=(1, None),
+                                 background_color=(1, 1, 1, 0),
+                                 color=(52/256, 123/256, 169/256, 1),
+                                 halign='right',
+                                 bold=True)
+
         btn_ng.text_size = btn_ng.size
         btn_ng.bind(on_press=self.create_person_menu)
         box.add_widget(btn_ng)
@@ -393,13 +394,20 @@ class GUI(App):
                              color=(0, 0, 0, 1),
                              height=30, size_hint=(1, 0.1), text_size=(500, 30), halign='left'))
 
+        scroll_view = ScrollView(size_hint=(1, None),
+                                 height=400)
+        scroll_viewport = BoxLayout(orientation='vertical',
+                                    size_hint=(1,1))
+        scroll_view.add_widget(scroll_viewport)
+        box.add_widget(scroll_view)
+
         for person in self.state.list_persons():
             btn = ButtonWithSound(text=person.name)
             btn.person = person
             btn.bind(on_press=self._load_game)
-            box.add_widget(btn)
+            scroll_viewport.add_widget(btn)
 
-        btn_m = ButtonWithSound(text=' RETURN',
+        btn_m = ButtonWithSound(text='RETURN',
                                 font_size='20px',
                                 height=50,
                                 size_hint=(1, 0.1),

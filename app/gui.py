@@ -7,6 +7,7 @@ from kivy.uix.settings import SettingsWithTabbedPanel
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image
@@ -387,25 +388,39 @@ class GUI(App):
         self.last_func = self.load_person_menu
         self.redraw_background()
         box = BoxLayout(orientation='vertical',
-                        size=(500, 450),
+                        size=(700, 450),
                         size_hint=(None, None),
-                        pos=(self.layout.center_x-200, self.layout.center_y-350))
+                        pos=(self.layout.center_x-300, self.layout.center_y-350))
         box.add_widget(Label(text='Load person menu', font_size='20px',
                              color=(0, 0, 0, 1),
                              height=30, size_hint=(1, 0.1), text_size=(500, 30), halign='left'))
 
         scroll_view = ScrollView(size_hint=(1, None),
                                  height=400)
-        scroll_viewport = BoxLayout(orientation='vertical',
-                                    size_hint=(1,1))
+        scroll_viewport = GridLayout(cols=2,
+                                     size_hint=(1, None),
+                                     height=len(self.state.list_persons())*60)
         scroll_view.add_widget(scroll_viewport)
         box.add_widget(scroll_view)
 
         for person in self.state.list_persons():
-            btn = ButtonWithSound(text=person.name)
+            btn = ButtonWithSound(text=person.name,
+                                  size_hint=(0.7, None),
+                                  height=48,
+                                  font_size='48px',
+                                  halign='left',
+                                  background_color=(0, 0, 0, 0),
+                                  color=(0, 0, 0, 1),
+                                  bold=True)
             btn.person = person
             btn.bind(on_press=self._load_game)
+            last_time = Label(text='last/time',
+                              size_hint=(0.3, None),
+                              font_size='36px',
+                              height=58,
+                              color=(0, 0, 0, 1))
             scroll_viewport.add_widget(btn)
+            scroll_viewport.add_widget(last_time)
 
         btn_m = ButtonWithSound(text='RETURN',
                                 font_size='20px',

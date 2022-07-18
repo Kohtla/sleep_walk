@@ -1,12 +1,13 @@
-
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.widget import Widget
 
-from kivy.graphics import PopMatrix, PushMatrix, Rotate
+from kivy.graphics import PopMatrix, PushMatrix, Rotate, Color, Ellipse, Rectangle
 
 
 class BackGround(Image):
@@ -42,7 +43,7 @@ class MenuBoxLayout(BoxLayout):
         super().__init__(**kwargs)
         with self.canvas.before:
             PushMatrix()
-            self.rotation = Rotate(angle=22.57, origin=self.center)
+            self.rotation = Rotate(angle=0, origin=self.center)
 
         with self.canvas.after:
             PopMatrix()
@@ -50,10 +51,38 @@ class MenuBoxLayout(BoxLayout):
 
 class ButtonWithSound(Button):
     fx_sound = None
+    base_color = (0, 0, 0, 1)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.base_color = kwargs.get('color', (0, 0, 0, 1))
 
     def on_press(self):
         ButtonWithSound.fx_sound.play()
         return super().on_press()
+
+
+class Bullet(Widget):
+    color = (0, 0, 0)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        print(self.x)
+        with self.canvas.before:
+            Color(*self.color)
+            Ellipse(size=self.size)
+
+
+class BulletButton(BoxLayout):
+
+    def __init__(self, **kwargs):
+        btn = ButtonWithSound(**kwargs)
+        bul = Bullet(size=kwargs.get("bullet_size", (50, 50)))
+        super().__init__(pos=kwargs.get("pos", (0, 0)),
+                         width=kwargs.get("width") +
+                         kwargs.get("bullet_size", (50, 50))[0],
+                         height=kwargs.get("height"),
+                         orientation='horizontal')
+        self.add_widget(btn)
+        print(self.pos)
+        self.add_widget(bul)

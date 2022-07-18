@@ -15,6 +15,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.animation import Animation
 from app.init_story import init_story
 from kivy.config import Config, ConfigParser
+from datetime import datetime
 
 from app.components import BulletButton, RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton, Bullet
 
@@ -351,31 +352,46 @@ class GUI(App):
         self.redraw_background()
 
         box = BoxLayout(orientation='vertical',
-                        size=(200, 200),
+                        size=(600, 200),
                         size_hint=(None, None),
-                        pos=(self.layout.center_x-100,
-                             self.layout.center_y-100),
+                        pos=(self.layout.center_x-300,
+                             self.layout.center_y-200),
                         spacing=5)
 
-        box.add_widget(Label(text='CREATE PERSON'))
+        box.add_widget(Label(text='ENTER YOUR NAME HERE',
+                             font_size='20px',
+                             color=(0, 0, 0, 1),
+                             size_hint=(1, 0.1),
+                             text_size=(600, 20),
+                             halign='left'))
 
-        textinput = TextInput(text='',)
+        textinput = TextInput(text='',
+                              halign='center',
+                              size_hint=(1, 0.5))
         textinput.bind(text=self._username_changed)
         box.add_widget(textinput)
 
         buttons_orientation = BoxLayout(orientation='horizontal',
-                                        size=(200, 50),
+                                        size=(600, 80),
                                         size_hint=(None, None),
                                         spacing=5)
         box.add_widget(buttons_orientation)
 
         btn_m = ButtonWithSound(text='RETURN',
-                                size=(100, 50))
+                                size=(300, 80),
+                                font_size='60px',
+                                background_color=(0,0,0,0),
+                                bold=True,
+                                color=(117/255, 117/255, 117/255, 1))
         btn_m.bind(on_press=self.main_menu)
         buttons_orientation.add_widget(btn_m)
 
-        btn_go = ButtonWithSound(text='CREATE',
-                                 size=(100, 50))
+        btn_go = ButtonWithSound(text='ACCEPT',
+                                 size=(300, 80),
+                                 font_size='60px',
+                                 background_color=(0,0,0,0),
+                                 bold=True,
+                                 color=(52/255, 123/255, 169/255, 1))
         btn_go.bind(on_press=self._create_person)
         buttons_orientation.add_widget(btn_go)
         self.layout.add_widget(box)
@@ -415,7 +431,7 @@ class GUI(App):
                                   bold=True)
             btn.person = person
             btn.bind(on_press=self._load_game)
-            last_time = Label(text='last/time',
+            last_time = Label(text=datetime.strftime(person.date_updated, '%d/%m/%Y'),
                               size_hint=(0.3, None),
                               font_size='36px',
                               height=58,

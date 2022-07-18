@@ -356,18 +356,23 @@ class GUI(App):
                         size_hint=(None, None),
                         pos=(self.layout.center_x-300,
                              self.layout.center_y-200),
-                        spacing=5)
+                        spacing=10)
 
         box.add_widget(Label(text='ENTER YOUR NAME HERE',
                              font_size='20px',
                              color=(0, 0, 0, 1),
-                             size_hint=(1, 0.1),
+                             size_hint=(1, None),
+                             height=20,
                              text_size=(600, 20),
                              halign='left'))
 
         textinput = TextInput(text='',
                               halign='center',
-                              size_hint=(1, 0.5))
+                              size_hint=(1, None),
+                              height=123,
+                              multiline=False,
+                              font_size='60px',
+                              padding_y=25)
         textinput.bind(text=self._username_changed)
         box.add_widget(textinput)
 

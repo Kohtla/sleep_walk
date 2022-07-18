@@ -393,7 +393,7 @@ class GUI(App):
                         pos=(self.layout.center_x-300, self.layout.center_y-350))
         box.add_widget(Label(text='Load person menu', font_size='20px',
                              color=(0, 0, 0, 1),
-                             height=30, size_hint=(1, 0.1), text_size=(500, 30), halign='left'))
+                             height=30, size_hint=(1, 0.1), text_size=(700, 30), halign='left'))
 
         scroll_view = ScrollView(size_hint=(1, None),
                                  height=400)
@@ -406,9 +406,10 @@ class GUI(App):
         for person in self.state.list_persons():
             btn = ButtonWithSound(text=person.name,
                                   size_hint=(0.7, None),
-                                  height=48,
+                                  height=58,
                                   font_size='48px',
                                   halign='left',
+                                  text_size=(490, 58),
                                   background_color=(0, 0, 0, 0),
                                   color=(0, 0, 0, 1),
                                   bold=True)
@@ -426,7 +427,7 @@ class GUI(App):
                                 font_size='20px',
                                 height=50,
                                 size_hint=(1, 0.1),
-                                text_size=(500, 25),
+                                text_size=(700, 25),
                                 halign='left',
                                 background_color=(0, 0, 0, 0),
                                 color=(0, 0, 0, 1))

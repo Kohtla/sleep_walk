@@ -40,7 +40,7 @@ class GUI(App):
     last_func = None
 
     girls_paths = ['img/girl1.png', 'img/girl2.jpg']
-    girls_positions = [(-400, 5), (1, 20)]
+    girls_positions = [(0, 5), (40, 20)]
 
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
@@ -136,7 +136,7 @@ class GUI(App):
     def close_settings(self, *args):
         Animation.cancel_all(self.girl_image)
         self.girls_paths = ['img/girl1.png', 'img/girl2.jpg']
-        self.girls_positions = [(-400, 5), (1, 20)]
+        self.girls_positions = [(0, 5), (40, 20)]
         try:
             p = self.settings_popup
             self.last_func()
@@ -177,15 +177,18 @@ class GUI(App):
 
     def redraw_background(self):
         self.layout.clear_widgets()
-
+        color_img = Image(source="img/colors.png",
+                          size_hint=(None, None),
+                          size=self.layout.size)
+        self.layout.add_widget(color_img)
         self.girl_image = Image(source='img/girl1.png',
-                                pos=(1*self.kx, 20*self.ky))
+                                pos=(40*self.kx, 20*self.ky))
 
         self.layout.add_widget(self.girl_image)
 
         anim = Animation(d=8,
                          t='in_out_cubic',
-                         x=-400*self.kx,
+                         x=0*self.kx,
                          y=5*self.ky)
         anim += Animation(d=2,
                           t='in_cubic',
@@ -385,7 +388,7 @@ class GUI(App):
         btn_m = ButtonWithSound(text='RETURN',
                                 size=(300, 80),
                                 font_size='60px',
-                                background_color=(0,0,0,0),
+                                background_color=(0, 0, 0, 0),
                                 bold=True,
                                 color=(117/255, 117/255, 117/255, 1))
         btn_m.bind(on_press=self.main_menu)
@@ -394,7 +397,7 @@ class GUI(App):
         btn_go = ButtonWithSound(text='ACCEPT',
                                  size=(300, 80),
                                  font_size='60px',
-                                 background_color=(0,0,0,0),
+                                 background_color=(0, 0, 0, 0),
                                  bold=True,
                                  color=(52/255, 123/255, 169/255, 1))
         btn_go.bind(on_press=self._create_person)

@@ -6,6 +6,7 @@ class MainMenuScreen:
         self.gui = gui
 
     def draw(self):
+        # TODO: there is a method to find posibility to continue game easier fix that
         pers = [p for p in self.gui.state.list_persons()]
         box = MenuBoxLayout(orientation='vertical',
                             size=(600, 520),

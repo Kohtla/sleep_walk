@@ -201,7 +201,7 @@ class GUI(App):
     def main_menu(self, instance=None):
 
         self.last_func = self.main_menu
-
+        # TODO: what that config is doing here, need to replace
         conf = ConfigParser()
         conf.read(self.get_application_config())
         self.layout.size = (conf.get("graphics", "resolution").split(

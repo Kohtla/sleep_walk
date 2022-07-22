@@ -1,3 +1,4 @@
+from random import randint
 from turtle import color
 import kivy
 from kivy.app import App
@@ -42,6 +43,9 @@ class GUI(App):
 
     girls_paths = ['img/girl1.png', 'img/girl2.jpg']
     girls_positions = [(0, 5), (40, 20)]
+    quotes = ["(54,1,63",
+              "In this world, is the destiny of mankind controlled by some transcendental entity or law? Is it like the hand of God hovering above? At least it is true that man has no control, even over his own wil",
+              "Вот как? И вы думаете, я этому поверю, салага? Вот она правда: вы допустили потерю дорогостоящего обмундирования. Его стоимость будет вычтена из вашего жалованья, и вы будете служить, пока вам не исполнится пятьсот десять лет, потому что вам понадобится именно столько лет, чтобы оплатить комплект Силовой боевой брони модель II, который вы потеряли! Доложите об этом в арсенале, получите новый комплект, а потом вернитесь и доложите мне, рядовой! Свободны!"]
 
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
@@ -155,6 +159,9 @@ class GUI(App):
     def _init_story(self, instance):
         init_story()
 
+    def _random_quote(self):
+        return self.quotes[randint(0, len(self.quotes)-1)]
+
     # This function changes the source of the image and creates next animation recursively
     def _next_girl_image(self, widget):
         girl_path = self.girls_paths.pop()
@@ -203,6 +210,13 @@ class GUI(App):
                         size=self.layout.size)
 
         self.layout.add_widget(bg)
+        # Wolf quotes | AUF!
+        wolf_quote = Label(text=self._random_quote(),
+                           pos=(150, 100),
+                           text_size=(300, 250),
+                           font_size='15px',
+                           color=(54/255, 1/255, 63/255, 1))
+        bg.add_widget(wolf_quote)
 
     def main_menu(self, instance=None):
 

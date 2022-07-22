@@ -86,3 +86,10 @@ class BulletButton(BoxLayout):
         self.add_widget(btn)
         print(self.pos)
         self.add_widget(bul)
+
+class RunningLine(Label):
+    def _line_update(self):
+        self.text = self.text[-1] + self.text[0:-2]
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.max_lines = 1

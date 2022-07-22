@@ -43,7 +43,7 @@ class MenuBoxLayout(BoxLayout):
         super().__init__(**kwargs)
         with self.canvas.before:
             PushMatrix()
-            self.rotation = Rotate(angle=0, origin=self.center)
+            self.rotation = Rotate(angle=20, origin=self.center)
 
         with self.canvas.after:
             PopMatrix()

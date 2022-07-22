@@ -7,12 +7,15 @@ from kivy.uix.settings import SettingsWithTabbedPanel
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image
+from kivy.uix.scrollview import ScrollView
 from kivy.animation import Animation
 from app.init_story import init_story
 from kivy.config import Config, ConfigParser
+from datetime import datetime
 
 from app.components import BulletButton, RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton, Bullet
 from app.screens import MainMenuScreen
@@ -38,7 +41,7 @@ class GUI(App):
     last_func = None
 
     girls_paths = ['img/girl1.png', 'img/girl2.jpg']
-    girls_positions = [(-400, 5), (1, 20)]
+    girls_positions = [(0, 5), (40, 20)]
 
     def mouse_dispatch(self, window, pos):
         for widget in window.children[0].walk():
@@ -134,7 +137,7 @@ class GUI(App):
     def close_settings(self, *args):
         Animation.cancel_all(self.girl_image)
         self.girls_paths = ['img/girl1.png', 'img/girl2.jpg']
-        self.girls_positions = [(-400, 5), (1, 20)]
+        self.girls_positions = [(0, 5), (40, 20)]
         try:
             p = self.settings_popup
             self.last_func()
@@ -175,15 +178,18 @@ class GUI(App):
 
     def redraw_background(self):
         self.layout.clear_widgets()
-
+        color_img = Image(source="img/colors.png",
+                          size_hint=(None, None),
+                          size=self.layout.size)
+        self.layout.add_widget(color_img)
         self.girl_image = Image(source='img/girl1.png',
-                                pos=(1*self.kx, 20*self.ky))
+                                pos=(40*self.kx, 20*self.ky))
 
         self.layout.add_widget(self.girl_image)
 
         anim = Animation(d=8,
                          t='in_out_cubic',
-                         x=-400*self.kx,
+                         x=0*self.kx,
                          y=5*self.ky)
         anim += Animation(d=2,
                           t='in_cubic',
@@ -279,31 +285,51 @@ class GUI(App):
         self.redraw_background()
 
         box = BoxLayout(orientation='vertical',
-                        size=(200, 200),
+                        size=(600, 200),
                         size_hint=(None, None),
-                        pos=(self.layout.center_x-100,
-                             self.layout.center_y-100),
-                        spacing=5)
+                        pos=(self.layout.center_x-300,
+                             self.layout.center_y-200),
+                        spacing=10)
 
-        box.add_widget(Label(text='CREATE PERSON'))
+        box.add_widget(Label(text='ENTER YOUR NAME HERE',
+                             font_size='20px',
+                             color=(0, 0, 0, 1),
+                             size_hint=(1, None),
+                             height=20,
+                             text_size=(600, 20),
+                             halign='left'))
 
-        textinput = TextInput(text='',)
+        textinput = TextInput(text='',
+                              halign='center',
+                              size_hint=(1, None),
+                              height=123,
+                              multiline=False,
+                              font_size='60px',
+                              padding_y=25)
         textinput.bind(text=self._username_changed)
         box.add_widget(textinput)
 
         buttons_orientation = BoxLayout(orientation='horizontal',
-                                        size=(200, 50),
+                                        size=(600, 80),
                                         size_hint=(None, None),
                                         spacing=5)
         box.add_widget(buttons_orientation)
 
         btn_m = ButtonWithSound(text='RETURN',
-                                size=(100, 50))
+                                size=(300, 80),
+                                font_size='60px',
+                                background_color=(0, 0, 0, 0),
+                                bold=True,
+                                color=(117/255, 117/255, 117/255, 1))
         btn_m.bind(on_press=self.main_menu)
         buttons_orientation.add_widget(btn_m)
 
-        btn_go = ButtonWithSound(text='CREATE',
-                                 size=(100, 50))
+        btn_go = ButtonWithSound(text='ACCEPT',
+                                 size=(300, 80),
+                                 font_size='60px',
+                                 background_color=(0, 0, 0, 0),
+                                 bold=True,
+                                 color=(52/255, 123/255, 169/255, 1))
         btn_go.bind(on_press=self._create_person)
         buttons_orientation.add_widget(btn_go)
         self.layout.add_widget(box)
@@ -316,24 +342,46 @@ class GUI(App):
         self.last_func = self.load_person_menu
         self.redraw_background()
         box = BoxLayout(orientation='vertical',
-                        size=(500, 450),
+                        size=(700, 450),
                         size_hint=(None, None),
-                        pos=(self.layout.center_x-200, self.layout.center_y-350))
+                        pos=(self.layout.center_x-300, self.layout.center_y-350))
         box.add_widget(Label(text='Load person menu', font_size='20px',
                              color=(0, 0, 0, 1),
-                             height=30, size_hint=(1, 0.1), text_size=(500, 30), halign='left'))
+                             height=30, size_hint=(1, 0.1), text_size=(700, 30), halign='left'))
+
+        scroll_view = ScrollView(size_hint=(1, None),
+                                 height=400)
+        scroll_viewport = GridLayout(cols=2,
+                                     size_hint=(1, None),
+                                     height=len(self.state.list_persons())*60)
+        scroll_view.add_widget(scroll_viewport)
+        box.add_widget(scroll_view)
 
         for person in self.state.list_persons():
-            btn = ButtonWithSound(text=person.name)
+            btn = ButtonWithSound(text=person.name,
+                                  size_hint=(0.7, None),
+                                  height=58,
+                                  font_size='48px',
+                                  halign='left',
+                                  text_size=(490, 58),
+                                  background_color=(0, 0, 0, 0),
+                                  color=(0, 0, 0, 1),
+                                  bold=True)
             btn.person = person
             btn.bind(on_press=self._load_game)
-            box.add_widget(btn)
+            last_time = Label(text=datetime.strftime(person.date_updated, '%d/%m/%Y'),
+                              size_hint=(0.3, None),
+                              font_size='36px',
+                              height=58,
+                              color=(0, 0, 0, 1))
+            scroll_viewport.add_widget(btn)
+            scroll_viewport.add_widget(last_time)
 
-        btn_m = ButtonWithSound(text=' RETURN',
+        btn_m = ButtonWithSound(text='RETURN',
                                 font_size='20px',
                                 height=50,
                                 size_hint=(1, 0.1),
-                                text_size=(500, 25),
+                                text_size=(700, 25),
                                 halign='left',
                                 background_color=(0, 0, 0, 0),
                                 color=(0, 0, 0, 1))

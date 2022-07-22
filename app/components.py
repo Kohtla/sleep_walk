@@ -9,6 +9,8 @@ from kivy.uix.widget import Widget
 
 from kivy.graphics import PopMatrix, PushMatrix, Rotate, Color, Ellipse, Rectangle
 
+from .util import setInterval
+
 
 class BackGround(Image):
     main_size = (1280, 1920)
@@ -87,9 +89,25 @@ class BulletButton(BoxLayout):
         print(self.pos)
         self.add_widget(bul)
 
+
 class RunningLine(Label):
+    angle = 0
+
+    @setInterval(.3)
     def _line_update(self):
-        self.text = self.text[-1] + self.text[0:-2]
+        self.text = self.text[-1] + self.text[0:-1]
+
     def __init__(self, **kwargs):
+        self.angle = kwargs.pop("angle", 0)
         super().__init__(**kwargs)
         self.max_lines = 1
+        with self.canvas.before:
+            PushMatrix()
+            self.rotation = Rotate(angle=self.angle, origin=self.center)
+
+        with self.canvas.after:
+            PopMatrix()
+        self.stop_updating = self._line_update()
+
+    def stop_updating_line(self):
+        self.stop_updating.set()

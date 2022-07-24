@@ -1,4 +1,3 @@
-from turtle import color
 import kivy
 from kivy.app import App
 from kivy.core.audio import SoundLoader
@@ -18,9 +17,7 @@ from kivy.config import Config, ConfigParser
 from datetime import datetime
 
 from app.components import BulletButton, RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton, Bullet
-from app.screens import MainMenuScreen
-from app.screens.create_person_screen import CreatePersonScreen
-from app.screens.pause_screen import PauseScreen
+from app.screens import MainMenuScreen, LoadScreen, CreatePersonScreen, PauseScreen
 
 # TODO: move somewhere in gui class
 Config.set("graphics", "resizable", 0)
@@ -272,52 +269,10 @@ class GUI(App):
     def load_person_menu(self, instance):
         self.last_func = self.load_person_menu
         self.redraw_background()
-        box = BoxLayout(orientation='vertical',
-                        size=(700, 450),
-                        size_hint=(None, None),
-                        pos=(self.layout.center_x-300, self.layout.center_y-350))
-        box.add_widget(Label(text='Load person menu', font_size='20px',
-                             color=(0, 0, 0, 1),
-                             height=30, size_hint=(1, 0.1), text_size=(700, 30), halign='left'))
 
-        scroll_view = ScrollView(size_hint=(1, None),
-                                 height=400)
-        scroll_viewport = GridLayout(cols=2,
-                                     size_hint=(1, None),
-                                     height=len(self.state.list_persons())*60)
-        scroll_view.add_widget(scroll_viewport)
-        box.add_widget(scroll_view)
+        load_screen = LoadScreen(self)
+        box = load_screen.draw()
 
-        for person in self.state.list_persons():
-            btn = ButtonWithSound(text=person.name,
-                                  size_hint=(0.7, None),
-                                  height=58,
-                                  font_size='48px',
-                                  halign='left',
-                                  text_size=(490, 58),
-                                  background_color=(0, 0, 0, 0),
-                                  color=(0, 0, 0, 1),
-                                  bold=True)
-            btn.person = person
-            btn.bind(on_press=self._load_game)
-            last_time = Label(text=datetime.strftime(person.date_updated, '%d/%m/%Y'),
-                              size_hint=(0.3, None),
-                              font_size='36px',
-                              height=58,
-                              color=(0, 0, 0, 1))
-            scroll_viewport.add_widget(btn)
-            scroll_viewport.add_widget(last_time)
-
-        btn_m = ButtonWithSound(text='RETURN',
-                                font_size='20px',
-                                height=50,
-                                size_hint=(1, 0.1),
-                                text_size=(700, 25),
-                                halign='left',
-                                background_color=(0, 0, 0, 0),
-                                color=(0, 0, 0, 1))
-        btn_m.bind(on_press=self.main_menu)
-        box.add_widget(btn_m)
         self.layout.add_widget(box)
 
     def _set_lang(self, id):

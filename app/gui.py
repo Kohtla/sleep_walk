@@ -19,6 +19,7 @@ from datetime import datetime
 
 from app.components import BulletButton, RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton, Bullet
 from app.screens import MainMenuScreen
+from app.screens.pause_screen import PauseScreen
 
 # TODO: move somewhere in gui class
 Config.set("graphics", "resizable", 0)
@@ -233,34 +234,8 @@ class GUI(App):
 
         self.redraw_background()
 
-        box = BoxLayout(orientation='vertical',
-                        size=(200, 200),
-                        size_hint=(None, None),
-                        spacing=5,
-                        pos=(self.layout.center_x-100, self.layout.center_y-100))
-
-        box.add_widget(Label(text='PAUSE'))
-
-        btn_r = ButtonWithSound(text='RESUME',
-                                height=95)
-        btn_r.bind(on_press=self.show_level)
-        box.add_widget(btn_r)
-
-        btn_m = ButtonWithSound(text='MAIN MENU',
-                                height=95)
-        btn_m.bind(on_press=self.main_menu)
-        box.add_widget(btn_m)
-
-        btn_s = ButtonWithSound(text="SETTINGS",
-                                height=95)
-        btn_s.bind(on_press=self.open_settings)
-        box.add_widget(btn_s)
-
-        btn_e = ButtonWithSound(text='EXIT',
-                                height=95)
-        btn_e.bind(on_press=self.stop)
-        box.add_widget(btn_e)
-
+        pause_screen = PauseScreen(self)
+        box = pause_screen.draw()
         self.layout.add_widget(box)
 
     def _username_changed(self, instance, value):
@@ -416,7 +391,7 @@ class GUI(App):
         self.show_level()
 
     def show_level(self, instance=None):
-        self.redraw_background()
+        self.layout.clear_widgets()
         self.layout.add_widget(AlignedLabel(text='It is level %s for %s' %
                                             (self.state.level.name,
                                              self.state.person.name),

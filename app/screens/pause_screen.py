@@ -2,10 +2,11 @@ from app.components import ButtonWithSound
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 
+
 class PauseScreen:
     def __init__(self, gui) -> None:
         self.gui = gui
-    
+
     def draw(self) -> BoxLayout:
         box = BoxLayout(orientation='vertical',
                         size=(200, 200),

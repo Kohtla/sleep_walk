@@ -19,6 +19,7 @@ from datetime import datetime
 
 from app.components import BulletButton, RootWidget, ButtonWithSound, BackGround, MenuBoxLayout, AlignedLabel, ChoiceButton, Bullet
 from app.screens import MainMenuScreen
+from app.screens.create_person_screen import CreatePersonScreen
 from app.screens.pause_screen import PauseScreen
 
 # TODO: move somewhere in gui class
@@ -259,54 +260,9 @@ class GUI(App):
         self.last_func = self.create_person_menu
         self.redraw_background()
 
-        box = BoxLayout(orientation='vertical',
-                        size=(600, 200),
-                        size_hint=(None, None),
-                        pos=(self.layout.center_x-300,
-                             self.layout.center_y-200),
-                        spacing=10)
+        creation_menu = CreatePersonScreen(self)
+        box = creation_menu.draw()
 
-        box.add_widget(Label(text='ENTER YOUR NAME HERE',
-                             font_size='20px',
-                             color=(0, 0, 0, 1),
-                             size_hint=(1, None),
-                             height=20,
-                             text_size=(600, 20),
-                             halign='left'))
-
-        textinput = TextInput(text='',
-                              halign='center',
-                              size_hint=(1, None),
-                              height=123,
-                              multiline=False,
-                              font_size='60px',
-                              padding_y=25)
-        textinput.bind(text=self._username_changed)
-        box.add_widget(textinput)
-
-        buttons_orientation = BoxLayout(orientation='horizontal',
-                                        size=(600, 80),
-                                        size_hint=(None, None),
-                                        spacing=5)
-        box.add_widget(buttons_orientation)
-
-        btn_m = ButtonWithSound(text='RETURN',
-                                size=(300, 80),
-                                font_size='60px',
-                                background_color=(0, 0, 0, 0),
-                                bold=True,
-                                color=(117/255, 117/255, 117/255, 1))
-        btn_m.bind(on_press=self.main_menu)
-        buttons_orientation.add_widget(btn_m)
-
-        btn_go = ButtonWithSound(text='ACCEPT',
-                                 size=(300, 80),
-                                 font_size='60px',
-                                 background_color=(0, 0, 0, 0),
-                                 bold=True,
-                                 color=(52/255, 123/255, 169/255, 1))
-        btn_go.bind(on_press=self._create_person)
-        buttons_orientation.add_widget(btn_go)
         self.layout.add_widget(box)
 
     def _load_game(self, instance):

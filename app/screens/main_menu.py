@@ -1,5 +1,6 @@
 from app.components import MenuBoxLayout, ButtonWithSound
 
+
 class MainMenuScreen:
 
     def __init__(self, gui):
@@ -29,16 +30,16 @@ class MainMenuScreen:
             box.add_widget(btn_c)
 
         btn_ng = ButtonWithSound(text='NEW GAME',
-                              font_size='96px' if len(
-                                  pers) == 0 else '60px',
-                              height=100 if len(pers) == 0 else 65,
-                              width=600,
-                              size_hint=(1, None),
-                              background_color=(1, 1, 1, 0),
-                              color=(52/256, 123/256, 169/256, 1),
-                              halign='right',
-                              bold=True)
-        
+                                 font_size='96px' if len(
+                                     pers) == 0 else '60px',
+                                 height=100 if len(pers) == 0 else 65,
+                                 width=600,
+                                 size_hint=(1, None),
+                                 background_color=(1, 1, 1, 0),
+                                 color=(52/256, 123/256, 169/256, 1),
+                                 halign='right',
+                                 bold=True)
+
         btn_ng.text_size = btn_ng.size
         btn_ng.bind(on_press=self.gui.create_person_menu)
         box.add_widget(btn_ng)
